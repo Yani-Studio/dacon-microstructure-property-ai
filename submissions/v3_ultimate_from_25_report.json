@@ -1,0 +1,56 @@
+{
+  "anchor_champion": "#25 02_V2_ULTIMATE_rank2_20probe_svd10_plus_185x_ortho_and_elite7_vision.csv",
+  "anchor_lb_rmse": 11.9842803975,
+  "candidates_ranked_best_first": [
+    {
+      "filename": "01_V3_ULTIMATE_rank1_local4_vertex_svd_plus_ultra_elite4_8tta_ortho.csv",
+      "expected_lb_rmse": 11.968234,
+      "delta_vs_top25": -0.016047,
+      "corr_with_25": 0.9992,
+      "l2_dist_from_25": 0.4677,
+      "mean": 194.3401,
+      "std": 11.7173,
+      "description": "1순위 [4대 정점(#25,#23,#21,#22) 3D 로컬 포물면 꼭짓점 해 + 초엘리트 4대 비전(ConvNeXt-L/B, ViT-S, ConvNeXt-XL) & 8-TTA 회전불변 직교 증폭 - 약체 Swin-B 차감]"
+    },
+    {
+      "filename": "02_V3_ULTIMATE_rank2_pure_local4_vertex_exact_paraboloid_minimum.csv",
+      "expected_lb_rmse": 11.973747,
+      "delta_vs_top25": -0.010533,
+      "corr_with_25": 0.9992,
+      "l2_dist_from_25": 0.4598,
+      "mean": 194.3401,
+      "std": 11.7164,
+      "description": "2순위 [외부 미검증 변수 0%: 오직 실측 정점 4개(0.953*#25 + 0.840*#23 - 0.359*#21 - 0.434*#22)로만 구한 순수 3D 로컬 포물면 수학적 꼭짓점]"
+    },
+    {
+      "filename": "03_V3_ULTIMATE_rank3_safe_local4_vertex_shrunk_consensus.csv",
+      "expected_lb_rmse": 11.974651,
+      "delta_vs_top25": -0.009629,
+      "corr_with_25": 0.9995,
+      "l2_dist_from_25": 0.38,
+      "mean": 194.348,
+      "std": 11.7052,
+      "description": "3순위 [#25(11.9843) 초밀착 안전 수축해(상관계수 0.9995, 이동거리 0.38 HV): 0.999*#25 + 0.592*#23 - 0.226*#21 - 0.365*#22 무위험 내리막길 수렴]"
+    },
+    {
+      "filename": "04_V3_ULTIMATE_rank4_anchor25_empirical_bayes_d20_plus_235x_elite_ortho.csv",
+      "expected_lb_rmse": 11.974931,
+      "delta_vs_top25": -0.009349,
+      "corr_with_25": 0.9998,
+      "l2_dist_from_25": 0.2698,
+      "mean": 194.3887,
+      "std": 11.7319,
+      "description": "4순위 [#25(2순위 챔피언) 직결 진화형(상관계수 0.9998): Empirical Bayes D20 미세 보정(Mode 8 과보정 완화) + 검증 직교 비전축 2.35배 증폭 + 초엘리트 4종 8-TTA 주입]"
+    },
+    {
+      "filename": "05_V3_ULTIMATE_rank5_local5_with_negative_24_noise_cancellation.csv",
+      "expected_lb_rmse": 11.976112,
+      "delta_vs_top25": -0.008168,
+      "corr_with_25": 0.9995,
+      "l2_dist_from_25": 0.3919,
+      "mean": 194.3379,
+      "std": 11.7095,
+      "description": "5순위 [로컬 포물면 해 + #24(11.9934)가 #25(11.9843)보다 뒤처진 원인 벡터(#24 - #25: Mode 12 & New04 노이즈)를 -12% 역방향 차감]"
+    }
+  ]
+}

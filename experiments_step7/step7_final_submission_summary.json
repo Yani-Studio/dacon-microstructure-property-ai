@@ -1,0 +1,35 @@
+{
+  "status": "COMPLETED",
+  "step_name": "7단계: 4단계 황금 레시피 고정 35-Fold 8-View D4 TTA (28만 회) 최종 제출 완성",
+  "recipe": "4단계 황금 레시피 (7대 챔피언 100% 보존 + Huber Robust Affine α=1.4085, β=-78.23 + Hall-Petch Guard [150, 265 HV])",
+  "tta_views": 8,
+  "total_inferences": 280000,
+  "golden_weights": {
+    "mobilenetv4_conv_small": 7.12,
+    "swin_tiny_patch4_window7_224": 3.0,
+    "inception_v3": 13.83,
+    "efficientnet_b6": 9.52,
+    "vit_small_patch16_224": 24.79,
+    "resnext101_32x8d": 21.1,
+    "convnext_large": 20.64
+  },
+  "affine_params": {
+    "alpha": 1.4085,
+    "beta": -78.23
+  },
+  "guard_range": [
+    150.0,
+    265.0
+  ],
+  "test_distribution": {
+    "min": 162.63,
+    "max": 241.13,
+    "mean": 194.06,
+    "std": 14.39
+  },
+  "submission_files": [
+    "submission_final_champion.csv",
+    "submission_step7_golden_fixed_huber_tta8.csv"
+  ],
+  "completed_at": "2026-10-14 07:22:24"
+}

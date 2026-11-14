@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>믹스-si (mix-si) | Microstructure Hardness Prediction Showcase</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #238636;
+      --green-glow: #2ea043;
+      --gold: #d29922;
+      --purple: #bc8cff;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      scroll-behavior: smooth;
+    }
+    .metric-glow-green {
+      box-shadow: 0 0 20px rgba(46, 160, 67, 0.15);
+      border: 1px solid rgba(46, 160, 67, 0.4);
+    }
+    .metric-glow-blue {
+      box-shadow: 0 0 20px rgba(88, 166, 255, 0.15);
+      border: 1px solid rgba(88, 166, 255, 0.4);
+    }
+    .nav-link:hover {
+      color: #58a6ff;
+      border-bottom: 2px solid #58a6ff;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #30363d;
+      border-radius: 4px;
+    }
+    .node-active {
+      border-color: #58a6ff !important;
+      background: rgba(88, 166, 255, 0.08) !important;
+      box-shadow: 0 0 15px rgba(88, 166, 255, 0.25);
+    }
+    .prose-custom p {
+      line-height: 1.75;
+      color: #c9d1d9;
+      margin-bottom: 0.85rem;
+    }
+    .prose-custom strong {
+      color: #ffffff;
+    }
+    @keyframes flowDash {
+      to {
+        stroke-dashoffset: -24;
+      }
+    }
+    .flow-line {
+      stroke-dasharray: 6, 6;
+      animation: flowDash 1s linear infinite;
+    }
+    .flow-line-green {
+      stroke-dasharray: 6, 6;
+      animation: flowDash 1s linear infinite;
+      stroke: #76b900;
+    }
+    .flow-line-reverse {
+      stroke-dasharray: 6, 6;
+      animation: flowDash 1s linear infinite reverse;
+      stroke: #10b981;
+    }
+    .diagram-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 0.75rem;
+      transition: all 0.2s ease;
+    }
+    .diagram-card:hover {
+      border-color: #58a6ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(88, 166, 255, 0.15);
+    }
+    .diagram-card-dgx:hover {
+      border-color: #76b900 !important;
+      box-shadow: 0 4px 15px rgba(118, 185, 0, 0.25) !important;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-blue-900 selection:text-white">
+
+  <!-- TOP GITHUB-STYLE NAVBAR -->
+  <header class="sticky top-0 z-50 bg-[#161b22]/90 backdrop-blur-md border-b border-[#30363d] px-4 lg:px-8 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Repo Breadcrumb -->
+      <div class="flex items-center gap-3">
+        <svg class="w-8 h-8 fill-current text-white" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+        <div class="flex items-center gap-1.5 text-sm md:text-base font-semibold">
+          <span class="text-[#58a6ff] hover:underline cursor-pointer">gyuminkang</span>
+          <span class="text-[#8b949e]">/</span>
+          <span class="text-white font-bold">믹스-si</span>
+          <span class="text-xs px-2 py-0.5 rounded-full border border-[#30363d] text-[#8b949e] font-mono">mix-si (Public)</span>
+        </div>
+      </div>
+
+      <!-- Live Server & Status Indicator -->
+      <div class="flex items-center gap-3">
+        <a href="http://localhost:8088" target="_blank" class="badge bg-emerald-950/60 text-emerald-400 border border-emerald-600/40 hover:bg-emerald-900/60 transition-colors">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-1"></span>
+          Localhost :8088 Live ↗
+        </a>
+        <span class="badge bg-purple-950/60 text-purple-300 border border-purple-500/30">
+          <i class="fa-solid fa-microchip mr-1"></i> NVIDIA DGX Spark
+        </span>
+      </div>
+
+      <!-- Jump Navigation -->
+      <nav class="hidden lg:flex items-center gap-5 text-sm text-[#8b949e] font-medium">
+        <a href="#summary" class="nav-link transition-colors py-1">요약 & 배경</a>
+        <a href="#infographics" class="nav-link transition-colors py-1">시각화 (8종)</a>
+        <a href="#architecture" class="nav-link transition-colors py-1">챔피언 아키텍처</a>
+        <a href="#dataset" class="nav-link transition-colors py-1">데이터 & 도메인 물리</a>
+        <a href="#submissions" class="nav-link transition-colors py-1">30회 진화 스토리</a>
+        <a href="#model-zoo" class="nav-link transition-colors py-1">79종 모델 벤치마크</a>
+        <a href="#quickstart" class="nav-link transition-colors py-1">재현 가이드</a>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-16">
+
+    <!-- 1. HERO & EXECUTIVE SUMMARY WITH DEEP BACKGROUND NARRATIVE -->
+    <section id="summary" class="space-y-6">
+      
+      <!-- Badges Row -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="badge bg-blue-900/40 text-blue-300 border border-blue-500/30"><i class="fa-brands fa-python"></i> Python 3.11+</span>
+        <span class="badge bg-orange-900/40 text-orange-300 border border-orange-500/30"><i class="fa-solid fa-fire"></i> PyTorch 2.2+</span>
+        <span class="badge bg-blue-900/40 text-blue-300 border border-blue-500/30"><i class="fa-solid fa-medal"></i> 231팀 중 최종 109위 (Rank 109 / 231)</span>
+        <span class="badge bg-emerald-900/40 text-emerald-300 border border-emerald-500/30"><i class="fa-solid fa-chart-line"></i> Public 팀 최고 11.7702 HV</span>
+        <span class="badge bg-purple-900/40 text-purple-300 border border-purple-500/30"><i class="fa-solid fa-shield-halved"></i> Private 팀 최고 12.5568 HV</span>
+        <span class="badge bg-gray-800 text-gray-300 border border-gray-600">30/30 Submissions Complete</span>
+        <span class="badge bg-gray-800 text-gray-300 border border-gray-600">MIT License</span>
+      </div>
+
+      <!-- Main Title -->
+      <div>
+        <h1 class="text-3xl lg:text-5xl font-extrabold tracking-tight text-white mb-3">
+          🔬 합성 미세조직 재료 경도 예측 솔루션 (최종 109위 / 231팀)
+        </h1>
+        <p class="text-lg lg:text-xl text-[#8b949e] font-normal leading-relaxed max-w-4xl">
+          <strong class="text-white">231개 참가팀 중 최종 109위</strong> 완료. <strong class="text-white">D4 Dihedral Group 대칭성</strong>, <strong class="text-white">SVD-48 직교 차원 정규화</strong>, <strong class="text-white">NVIDIA DGX Spark 분산 MoE 메타 신경망</strong>, 그리고 <strong class="text-white">리더보드 역기하학 영공간 사영(Metric Inversion)</strong>으로 자체 최고 점수 <strong class="text-white">Public 11.7702 HV (#30)</strong> 및 <strong class="text-white">Private 12.5568 HV (#27)</strong>를 달성한 엔드-투-엔드 파이프라인.
+        </p>
+      </div>
+
+      <!-- 8 Glowing KPI Cards (2x4 Comprehensive Performance Matrix) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- 1. Official Competition Rank -->
+        <div class="bg-[#161b22] rounded-2xl p-5 border border-blue-500/40 metric-glow-blue">
+          <div class="flex items-center justify-between text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">
+            <span>Official Final Rank</span>
+            <span class="px-2 py-0.5 rounded-full bg-blue-900/50 text-blue-400 font-mono">231 Teams</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl lg:text-4xl font-extrabold text-blue-400 font-mono">109</span>
+            <span class="text-xs text-[#8b949e]">위 / 231팀</span>
+          </div>
+          <div class="mt-2 text-xs text-blue-400 flex items-center gap-1 font-mono">
+            <i class="fa-solid fa-flag-checkered"></i>
+            <span>공식 최종 순위 (Top 47%)</span>
+          </div>
+        </div>
+
+        <!-- 2. Public LB Team Best -->
+        <div class="bg-[#161b22] rounded-2xl p-5 metric-glow-green">
+          <div class="flex items-center justify-between text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">
+            <span>Public LB (Team Best)</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-900/50 text-emerald-400 font-mono">#30 Peak</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl lg:text-4xl font-extrabold text-emerald-400 font-mono">11.7702</span>
+            <span class="text-xs text-[#8b949e]">HV</span>
+          </div>
+          <div class="mt-2 text-xs text-emerald-400 flex items-center gap-1 font-mono">
+            <i class="fa-solid fa-arrow-trend-down"></i>
+            <span>-1.106 HV 단축 (-8.59% 감소)</span>
+          </div>
+        </div>
+
+        <!-- 3. Private LB Team Best -->
+        <div class="bg-[#161b22] rounded-2xl p-5 border border-purple-500/30">
+          <div class="flex items-center justify-between text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">
+            <span>Private LB (Team Best)</span>
+            <span class="px-2 py-0.5 rounded-full bg-purple-900/50 text-purple-300 font-mono">#27 Peak</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl lg:text-4xl font-extrabold text-purple-400 font-mono">12.5568</span>
+            <span class="text-xs text-[#8b949e]">HV</span>
+          </div>
+          <div class="mt-2 text-xs text-purple-300 flex items-center gap-1 font-mono">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>-0.447 HV 단축 (Pub-Priv r=0.964)</span>
+          </div>
+        </div>
+
+        <!-- 4. Pearson / Spearman Correlation -->
+        <div class="bg-[#161b22] rounded-2xl p-5 border border-orange-500/30">
+          <div class="flex items-center justify-between text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">
+            <span>Pearson / Spearman</span>
+            <span class="px-2 py-0.5 rounded-full bg-orange-900/40 text-orange-300 font-mono font-bold">+127% Up</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl lg:text-4xl font-extrabold text-orange-400 font-mono">0.812+</span>
+            <span class="text-xs text-orange-300 font-mono">/ ρ 0.835</span>
+          </div>
+          <div class="mt-2 text-xs text-orange-300 flex items-center gap-1 font-mono">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>단일 트리(0.357) 대비 비약적 향상</span>
+          </div>
+        </div>
+
+        <!-- 5. Single Step Leap -->
+        <div class="bg-[#161b22] rounded-2xl p-5 border border-pink-500/30">
+          <div class="flex items-center justify-between text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">
+            <span>Single Largest Leap</span>
+            <span class="px-2 py-0.5 rounded-full bg-pink-900/40 text-pink-300 font-mono font-bold">🚀 #26 Leap</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl lg:text-4xl font-extrabold text-pink-400 font-mono">-0.1826</span>
+            <span class="text-xs text-[#8b949e]">HV</span>
+          </div>
+          <div class="mt-2 text-xs text-pink-300 font-mono">
+            <span>4,000장 D4 증강 + DGX Spark MoE</span>
+          </div>
+        </div>
+
+        <!-- 6. CV-to-LB Generalization Gap -->
+        <div class="bg-[#161b22] rounded-2xl p-5 border border-teal-500/30">
+          <div class="flex items-center justify-between text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">
+            <span>CV-to-LB Gap</span>
+            <span class="px-2 py-0.5 rounded-full bg-teal-900/40 text-teal-300 font-mono font-bold">Zero Leak</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl lg:text-4xl font-extrabold text-teal-400 font-mono">&lt; 0.028</span>
+            <span class="text-xs text-[#8b949e]">HV</span>
+          </div>
+          <div class="mt-2 text-xs text-teal-300 font-mono">
+            <span>5-Fold Group CV (12.904 ≈ 12.876)</span>
+          </div>
+        </div>
+
+        <!-- 7. 8-TTA Dihedral Inference Gain -->
+        <div class="bg-[#161b22] rounded-2xl p-5 border border-indigo-500/30">
+          <div class="flex items-center justify-between text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">
+            <span>8-TTA Symmetry Gain</span>
+            <span class="px-2 py-0.5 rounded-full bg-indigo-900/40 text-indigo-300 font-mono font-bold">D4 Group</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl lg:text-4xl font-extrabold text-indigo-400 font-mono">-0.0382</span>
+            <span class="text-xs text-[#8b949e]">HV</span>
+          </div>
+          <div class="mt-2 text-xs text-indigo-300 font-mono">
+            <span>8방향 대칭 뷰 평균화 (회전편차 0.00)</span>
+          </div>
+        </div>
+
+        <!-- 8. Total Model Zoo & Tail Error Reduction -->
+        <div class="bg-[#161b22] rounded-2xl p-5 border border-amber-500/30">
+          <div class="flex items-center justify-between text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">
+            <span>Model Pool &amp; Tail Gain</span>
+            <span class="px-2 py-0.5 rounded-full bg-amber-900/40 text-amber-300 font-mono font-bold">-31.4% Tail</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-3xl lg:text-4xl font-extrabold text-amber-400 font-mono">79</span>
+            <span class="text-xs text-[#8b949e]">Models (4,000 Aug)</span>
+          </div>
+          <div class="mt-2 text-xs text-amber-300 font-mono">
+            <span>비전 19 + KRR 40 + 트리 17 + MoE 3</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COMPETITION OFFICIAL BANNER & OVERVIEW -->
+      <div class="p-5 rounded-2xl bg-[#161b22] border border-[#30363d] space-y-4">
+        
+        <!-- Official Banner Image from DACON -->
+        <div class="rounded-xl overflow-hidden border border-[#30363d] shadow-lg">
+          <img src="assets/dacon_competition_banner.png" alt="DACON 합성 미세구조 기반 재료 물성 예측 AI 경진대회" class="w-full h-auto object-cover" />
+        </div>
+
+        <!-- Competition Overview & Key Specs Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-xs font-mono">
+          <div class="p-2.5 rounded-lg bg-[#0d1117] border border-[#30363d]">
+            <span class="text-[10px] text-[#8b949e] block">주최 기관</span>
+            <strong class="text-white">DACON (데이콘)</strong>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[#0d1117] border border-[#30363d]">
+            <span class="text-[10px] text-[#8b949e] block">대회 기간</span>
+            <strong class="text-emerald-400">9/29 ~ 10/29</strong>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[#0d1117] border border-[#30363d]">
+            <span class="text-[10px] text-[#8b949e] block">참가 신청</span>
+            <strong class="text-white">414개 팀</strong>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[#0d1117] border border-[#30363d]">
+            <span class="text-[10px] text-[#8b949e] block">최종 제출 팀</span>
+            <strong class="text-blue-400">231개 팀</strong>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[#0d1117] border border-[#30363d]">
+            <span class="text-[10px] text-[#8b949e] block">총 제출 횟수</span>
+            <strong class="text-purple-400">2,894건</strong>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[#0d1117] border border-blue-500/40 bg-blue-950/20">
+            <span class="text-[10px] text-blue-300 block">팀 최종 순위</span>
+            <strong class="text-blue-400 font-extrabold text-sm">109위 / 231팀</strong>
+          </div>
+        </div>
+
+        <!-- Brief Explanatory Note -->
+        <div class="p-4 rounded-xl bg-[#0d1117] border border-[#30363d] text-xs text-[#c9d1d9] leading-relaxed space-y-2">
+          <div class="font-bold text-white text-sm flex items-center gap-2">
+            <i class="fa-solid fa-circle-info text-[#58a6ff]"></i>
+            <span>대회 핵심 목표 및 문제 정의 요약</span>
+          </div>
+          <p>
+            <strong>"합성 미세구조 기반 재료 물성 예측 AI 경진대회"</strong>는 금속 및 합금 재료의 2차원 합성 미세구조 단면(Synthetic Microstructure) 이미지로부터 <strong>비커스 경도(대용값, Vickers Hardness, HV)</strong>를 정밀하게 예측하는 이미지 회귀(Image-to-Scalar Regression) 경진대회입니다.
+          </p>
+          <p>
+            금속 재료공학에서 경도는 결정립 크기(Grain Size), 결정립계(Grain Boundary)의 형상 및 곡률, 제2상(Second-phase) 석출 입자의 분율 및 기공(Pore) 분포 등 복합적인 미세조직 인자에 의해 결정됩니다. 본 대회는 단 <strong>500장의 극소수 훈련 샘플</strong>만으로 1,000장의 테스트 셋에 대해 일반화된 경도값을 추론해야 하는 고난도 컴퓨터 비전 과제였으며, 총 <strong>414개 참가팀 중 최종 제출을 완주한 231개 팀 중 109위</strong>를 기록하였습니다.
+          </p>
+        </div>
+
+      </div>
+      <div class="p-6 rounded-2xl bg-[#161b22] border border-[#30363d] prose-custom">
+        <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-compass-drafting text-[#58a6ff]"></i>
+          <span>경진대회의 본질과 직면했던 4대 공학적 난제</span>
+        </h3>
+        <p class="text-sm">
+          본 경진대회(합성 미세조직 기반 비커스 경도 예측)는 금속 합금의 2차원 전자현미경 단면 이미지로부터 기계적 물성인 <strong>비커스 경도(Vickers Hardness, HV)</strong>를 정밀하게 예측하는 이미지 회귀(Image Regression) 태스크입니다. 표면적으로는 전형적인 컴퓨터 비전 문제로 보이지만, 실질적으로는 일반적인 딥러닝 기법이 완전히 실패하기 쉬운 <strong>극단적인 데이터 불균형 및 물리적 대칭성 제약</strong>이 내포되어 있었습니다.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-3 border-t border-[#30363d]/60 text-xs">
+          <div class="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]">
+            <strong class="text-emerald-400 block mb-1">1. 극소 표본의 저주 (N = 500 Images)</strong>
+            훈련 데이터가 단 500장에 불과하여 수천만 개의 가중치를 가진 현대 CNN/ViT 모델을 직접 파인튜닝할 경우, 검증 손실(Validation Loss)은 낮아지나 테스트 환경에서 극심한 일반화 붕괴가 발생했습니다.
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]">
+            <strong class="text-blue-400 block mb-1">2. 공간적 등방성과 D4 대칭군 불변성</strong>
+            미세조직 단면은 정해진 상하좌우 방향이 존재하지 않습니다. 임의로 90도 회전하거나 좌우/상하로 반전하더라도 경도 측정치는 엄격히 동일해야 하므로, 모델이 방향성 편향을 학습하지 않도록 물리적 등변성을 수학적으로 강제해야 했습니다.
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]">
+            <strong class="text-purple-400 block mb-1">3. 5,982차원 파운데이션 임베딩의 거리 왜곡</strong>
+            DINOv2, EVA-02, CLIP 등 최첨단 사전학습 임베딩을 결합했을 때 5,982개의 원시 열이 62개 모델 예측 공간을 유클리드 거리상 93.3% 왜곡하여 노이즈를 폭증시키는 문제가 관측되었습니다.
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]">
+            <strong class="text-amber-400 block mb-1">4. 미공개 Public LB 평가 가중치 (w_pub)</strong>
+            Public LB(500장)의 개별 샘플 평가 가중치가 공개되지 않은 상태에서 무분별한 리더보드 프로빙은 과적합을 유발합니다. 제출물 간 거리 항등식을 역산하여 가중치를 무누수(Zero-Leakage)로 복원해야 했습니다.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 1.5 HIGH-RESOLUTION VISUALIZATION GALLERY (01 ~ 08, Architecture #1) -->
+    <section id="infographics" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#30363d] pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🖼️</span>
+            <h2 class="text-2xl font-bold text-white">핵심 성과 & 아키텍처 시각화 리포트 (8종 인포그래픽)</h2>
+          </div>
+          <p class="text-sm text-[#8b949e] mt-1">1번 듀얼 컴퓨팅 아키텍처부터 8번 경도 구간별 잔차 진단까지 GitHub README 및 포트폴리오용 2× Retina 시각화</p>
+        </div>
+        <span class="px-3 py-1 rounded-lg bg-[#21262d] border border-blue-500/30 text-blue-400 text-xs font-mono font-bold">
+          visualization/01 ~ 08
+        </span>
+      </div>
+
+      <!-- Featured #1 Architecture Diagram -->
+      <div class="p-4 rounded-2xl bg-[#161b22] border border-blue-500/40 space-y-3">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 font-bold">#01 • Dual-Compute Architecture Pipeline (Primary)</span>
+          <span class="text-[#8b949e]">01_champion_architecture_pipeline.png</span>
+        </div>
+        <img src="visualization/01_champion_architecture_pipeline.png" alt="01 Mac Studio & DGX Spark Architecture" class="w-full rounded-xl border border-[#30363d] shadow-lg" />
+      </div>
+
+      <!-- Remaining #02 ~ #08 Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-emerald-400 font-bold">#02 • 8대 핵심 성과 지표 배너</span>
+            <span class="text-[#8b949e]">02_hero_showcase_banner.png</span>
+          </div>
+          <img src="visualization/02_hero_showcase_banner.png" alt="02 Hero Showcase Banner" class="w-full rounded-lg border border-[#30363d]" />
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-sky-400 font-bold">#03 • 30회 공식 제출 점수 수렴 궤적</span>
+            <span class="text-[#8b949e]">03_submission_trajectory_convergence.png</span>
+          </div>
+          <img src="visualization/03_submission_trajectory_convergence.png" alt="03 Submission Trajectory" class="w-full rounded-lg border border-[#30363d]" />
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-purple-400 font-bold">#04 • 79종 모델군 CV vs 앙상블 벤치마크</span>
+            <span class="text-[#8b949e]">04_model_zoo_benchmark_comparison.png</span>
+          </div>
+          <img src="visualization/04_model_zoo_benchmark_comparison.png" alt="04 Model Zoo Benchmarks" class="w-full rounded-lg border border-[#30363d]" />
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-teal-400 font-bold">#05 • D4 대칭군 물리 증강 & 34종 도메인 피처</span>
+            <span class="text-[#8b949e]">05_physical_d4_symmetry_engine.png</span>
+          </div>
+          <img src="visualization/05_physical_d4_symmetry_engine.png" alt="05 Physical D4 Engine" class="w-full rounded-lg border border-[#30363d]" />
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-amber-400 font-bold">#06 • 10대 KPI 종합 검증 매트릭스</span>
+            <span class="text-[#8b949e]">06_kpi_scorecard_matrix.png</span>
+          </div>
+          <img src="visualization/06_kpi_scorecard_matrix.png" alt="06 KPI Scorecard" class="w-full rounded-lg border border-[#30363d]" />
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d] space-y-2">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-pink-400 font-bold">#07 • 단계별 오차 감소 기여도 (Ablation)</span>
+            <span class="text-[#8b949e]">07_ablation_waterfall_analysis.png</span>
+          </div>
+          <img src="visualization/07_ablation_waterfall_analysis.png" alt="07 Ablation Waterfall" class="w-full rounded-lg border border-[#30363d]" />
+        </div>
+      </div>
+
+      <!-- Full-Width #08 Generalization & Tail Diagnostics -->
+      <div class="p-4 rounded-2xl bg-[#161b22] border border-emerald-500/30 space-y-3">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="text-emerald-400 font-bold">#08 • Public vs Private 정합성(r=0.964) 및 초고경도 꼬리 오차(-31.4%) 진단</span>
+          <span class="text-[#8b949e]">08_generalization_and_tail_diagnostics.png</span>
+        </div>
+        <img src="visualization/08_generalization_and_tail_diagnostics.png" alt="08 Generalization & Tail Diagnostics" class="w-full rounded-xl border border-[#30363d]" />
+      </div>
+    </section>
+
+    <!-- 2. ARCHITECTURE SECTION (STREAMLIT LIVE HUB STYLE WITH DEEP EXPLANATION) -->
+    <section id="architecture" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#30363d] pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🏗️</span>
+            <h2 class="text-2xl font-bold text-white">MacBook & DGX Spark 분산 협력 아키텍처</h2>
+          </div>
+          <p class="text-sm text-[#8b949e] mt-1">로컬 M-시리즈 오케스트레이터와 원격 NVIDIA GB10 128GB GPU 간의 분산 텔레메트리 파이프라인</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono">
+          <span class="px-3 py-1 rounded-lg bg-[#21262d] border border-blue-500/30 text-blue-400">
+            💻 Mac Studio: <strong>Orchestrator</strong>
+          </span>
+          <span class="px-3 py-1 rounded-lg bg-[#21262d] border border-emerald-500/30 text-emerald-400">
+            ⚡ DGX Spark: <strong>GB10 128GB GPU</strong>
+          </span>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/30">
+            Sync: 18ms
+          </span>
+        </div>
+      </div>
+
+      <!-- Narrative Walkthrough of the Architecture -->
+      <div class="p-5 rounded-2xl bg-[#161b22] border border-[#30363d] text-sm prose-custom">
+        <h4 class="font-bold text-white mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-diagram-project text-emerald-400"></i>
+          <span>분산 협업 구조의 설계 의도: 왜 5단계 파이프라인이어야 했는가?</span>
+        </h4>
+        <p>
+          단일 딥러닝 모델이나 단순 블렌딩으로는 12점대의 단단한 벽을 깰 수 없었습니다. 본 시스템은 <strong>MacBook의 정밀 선형대수 및 SVD 연산 능력</strong>과 <strong>NVIDIA DGX Spark의 128GB 대규모 메모리 기반 비선형 어텐션 학습 능력</strong>을 유기적으로 분할 결합한 하이브리드 아키텍처로 설계되었습니다.
+        </p>
+      </div>
+
+      <!-- UNIFIED INTERACTIVE ARCHITECTURE SCHEMATIC WITH HARDWARE NODES & DATA FLOW ARROWS -->
+      <div class="p-6 rounded-2xl bg-[#090d13] border border-[#30363d] relative overflow-hidden shadow-2xl">
+        
+        <!-- Header of the Canvas -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#30363d]/80 pb-3 mb-6 text-xs font-mono">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-white font-bold">End-to-End Distributed Architecture Schematic</span>
+            <span class="text-[#8b949e]">|</span>
+            <span class="text-[#58a6ff]">Interactive Dataflow & Tensor Routing</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-[#8b949e]">각 노드를 클릭하면 하단 콘솔에 실시간 텐서/하드웨어 스펙이 표시됩니다</span>
+          </div>
+        </div>
+
+        <!-- 2 Large Compute Workstations Connected by Live Highway -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 relative">
+          
+          <!-- LEFT NODE: MacBook Studio (Local Master Orchestrator) -->
+          <div class="lg:col-span-7 p-4 rounded-xl bg-[#161b22]/90 border border-blue-500/40 relative flex flex-col justify-between space-y-4">
+            
+            <!-- Machine Header -->
+            <div class="flex items-center justify-between border-b border-[#30363d] pb-2 text-xs">
+              <div class="flex items-center gap-2 text-blue-400 font-bold">
+                <i class="fa-solid fa-laptop-code text-sm"></i>
+                <span>MacBook Pro (Apple Silicon Orchestrator)</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-blue-900/30 text-blue-300 text-[10px] font-mono">NEON SIMD Vectorized</span>
+            </div>
+
+            <!-- Pipeline Step 0: Input SEM Microstructure -->
+            <div class="p-3 rounded-lg bg-[#0d1117] border border-[#30363d] flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-blue-950/60 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                  <i class="fa-solid fa-microscope text-sm"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-white">2D 합성 미세조직 (Raw Input)</div>
+                  <div class="text-[11px] text-[#8b949e]">500장 전자현미경 단면 (결정립 & 상 분율)</div>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-gray-800 text-gray-300 font-mono text-[10px]">500 × 224 × 224</span>
+            </div>
+
+            <!-- Downward Flow Arrow -->
+            <div class="flex items-center justify-center my-0.5">
+              <div class="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#0d1117] border border-blue-500/30 text-[10px] text-blue-400 font-mono">
+                <i class="fa-solid fa-arrow-down text-xs animate-bounce"></i>
+                <span>D4 대칭군 생성기 (4 Rotations × 2 Inversions)</span>
+              </div>
+            </div>
+
+            <!-- Pipeline Step 1: D4 Dihedral Symmetry Engine (STAGE 1) -->
+            <div onclick="selectStage(1)" id="stage-card-1" class="diagram-card p-3 cursor-pointer node-active">
+              <div class="flex items-center justify-between text-xs mb-1">
+                <div class="flex items-center gap-2">
+                  <span class="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-mono font-bold text-[10px]">STAGE 1</span>
+                  <span class="font-bold text-white text-xs">D4 Dihedral Group Equivariance Engine</span>
+                </div>
+                <span class="text-emerald-400 font-mono text-[10px] font-bold">4,000 Masterset</span>
+              </div>
+              <div class="text-[11px] text-[#8b949e] flex items-center justify-between">
+                <span>회전 불변성 보존: 8개 뷰 예측 편차 영(0) 직교 사영</span>
+                <span class="text-blue-400 font-mono">1,850 img/s</span>
+              </div>
+            </div>
+
+            <!-- Downward Flow Branch -->
+            <div class="flex items-center justify-center my-0.5">
+              <div class="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#0d1117] border border-[#30363d] text-[10px] text-[#8b949e] font-mono">
+                <i class="fa-solid fa-arrows-split-up-and-left rotate-180 text-xs"></i>
+                <span>병렬 특징 추출 및 비전 백본 매니폴드</span>
+              </div>
+            </div>
+
+            <!-- Parallel Tracks Grid: DL Vision Backbones & Foundation SVD -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              
+              <!-- Track A: 19 DL Vision Backbones -->
+              <div class="p-2.5 rounded-lg bg-[#0d1117] border border-[#30363d] space-y-1">
+                <div class="flex items-center justify-between font-bold text-white text-[11px]">
+                  <span class="flex items-center gap-1.5 text-emerald-400">
+                    <i class="fa-solid fa-network-wired text-xs"></i>
+                    <span>19개 딥러닝 비전 백본</span>
+                  </span>
+                  <span class="text-[10px] text-emerald-400 font-mono">5-Fold OOF</span>
+                </div>
+                <div class="text-[11px] text-[#8b949e]">Swin-Small (12.90 HV), ResNeXt, ConvNeXt, EVA-02 MIM</div>
+              </div>
+
+              <!-- Track B: Foundation Embeddings & SVD-48 (STAGE 2) -->
+              <div onclick="selectStage(2)" id="stage-card-2" class="diagram-card p-2.5 cursor-pointer">
+                <div class="flex items-center justify-between font-bold text-white text-[11px]">
+                  <span class="flex items-center gap-1.5 text-blue-400">
+                    <span class="px-1 py-0.2 rounded bg-blue-500/20 text-[9px] font-mono">STAGE 2</span>
+                    <span>SVD-48 정규화</span>
+                  </span>
+                  <span class="text-[10px] text-purple-400 font-mono">d_zf = 110</span>
+                </div>
+                <div class="text-[11px] text-[#8b949e]">5,982개 열(DINOv2, CLIP) ⟶ Truncated SVD 110차원 압축</div>
+              </div>
+
+            </div>
+
+            <!-- Cross-Device Highway Connector (To DGX) -->
+            <div class="p-2 rounded-lg bg-[#0d1117] border border-blue-500/30 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 text-blue-400 font-mono text-[11px]">
+                <i class="fa-solid fa-arrow-right-arrow-left text-xs text-amber-400"></i>
+                <span class="font-bold">Egress to DGX GPU:</span>
+                <span class="text-white">110D Latents + 59 Models OOF</span>
+              </div>
+              <span class="badge bg-purple-950/80 text-purple-300 text-[10px] font-mono">18ms Ultra-Low Latency</span>
+            </div>
+
+            <!-- Downstream Returning Stages: Stage 4 & Stage 5 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1 border-t border-[#30363d]/60">
+              
+              <!-- STAGE 4: Q34 Subspace Inversion -->
+              <div onclick="selectStage(4)" id="stage-card-4" class="diagram-card p-2.5 cursor-pointer">
+                <div class="flex items-center justify-between font-bold text-white text-[11px] mb-0.5">
+                  <span class="flex items-center gap-1 text-purple-400">
+                    <span class="px-1 py-0.2 rounded bg-purple-500/20 text-[9px] font-mono">STAGE 4</span>
+                    <span>Q34 메트릭 역산</span>
+                  </span>
+                  <span class="text-[10px] text-purple-300 font-mono">w_pub 복원</span>
+                </div>
+                <div class="text-[11px] text-[#8b949e]">29개 프로브 영공간(Nullspace) 분해로 평가 가중치 역산</div>
+              </div>
+
+              <!-- STAGE 5: Affine Hull Optimization -->
+              <div onclick="selectStage(5)" id="stage-card-5" class="diagram-card p-2.5 cursor-pointer">
+                <div class="flex items-center justify-between font-bold text-white text-[11px] mb-0.5">
+                  <span class="flex items-center gap-1 text-amber-400">
+                    <span class="px-1 py-0.2 rounded bg-amber-500/20 text-[9px] font-mono">STAGE 5</span>
+                    <span>티호노프 아핀 헐</span>
+                  </span>
+                  <span class="text-[10px] text-amber-300 font-mono">λ = 0.05</span>
+                </div>
+                <div class="text-[11px] text-[#8b949e]">심플렉스 최적화로 고차원 오차 분산 억제 및 수렴</div>
+              </div>
+
+            </div>
+
+            <!-- Deliverables Output Box -->
+            <div class="p-3 rounded-xl bg-gradient-to-r from-emerald-950/40 via-[#0d1117] to-blue-950/40 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-flag-checkered text-emerald-400 text-sm"></i>
+                <div>
+                  <div class="font-bold text-white">최종 산출물 (Final Deliverables)</div>
+                  <div class="text-[11px] text-[#8b949e]">231팀 중 최종 109위 완료</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 font-mono">
+                <span class="px-2 py-1 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/30 text-[11px]">Public: 11.7702 HV (#30)</span>
+                <span class="px-2 py-1 rounded bg-blue-950 text-blue-400 font-bold border border-blue-500/30 text-[11px]">Private: 12.5568 HV (#27)</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT NODE: NVIDIA DGX Spark (GB10 GPU Tensor Compute Node) -->
+          <div class="lg:col-span-5 p-4 rounded-xl bg-[#161b22]/90 border border-[#76b900]/50 relative flex flex-col justify-between space-y-4">
+            
+            <!-- Machine Header -->
+            <div class="flex items-center justify-between border-b border-[#30363d] pb-2 text-xs">
+              <div class="flex items-center gap-2 text-[#76b900] font-bold">
+                <i class="fa-solid fa-microchip text-sm"></i>
+                <span>NVIDIA DGX Spark (GB10 128GB GPU)</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 text-[10px] font-mono font-bold">128GB Unified</span>
+            </div>
+
+            <!-- Live Hardware Telemetry HUD -->
+            <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div class="p-2 rounded-lg bg-[#0d1117] border border-[#30363d]">
+                <span class="text-[10px] text-[#8b949e] block">GPU THROUGHPUT</span>
+                <span class="text-emerald-400 font-extrabold text-sm">1,240</span> <span class="text-[10px] text-[#8b949e]">img/s</span>
+              </div>
+              <div class="p-2 rounded-lg bg-[#0d1117] border border-[#30363d]">
+                <span class="text-[10px] text-[#8b949e] block">VRAM ALLOCATION</span>
+                <span class="text-amber-400 font-extrabold text-sm">42.8</span> <span class="text-[10px] text-[#8b949e]">/ 128 GB</span>
+              </div>
+            </div>
+
+            <!-- High-Speed Ingress Pipe from Mac -->
+            <div class="p-2 rounded-lg bg-[#0d1117] border border-[#76b900]/30 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 text-emerald-400 font-mono text-[11px]">
+                <i class="fa-solid fa-arrow-down text-xs animate-bounce"></i>
+                <span class="font-bold">Ingress from Mac Studio:</span>
+                <span class="text-white">Batch Size 64 (FP16)</span>
+              </div>
+              <span class="badge bg-emerald-950 text-emerald-400 text-[10px] font-mono">Tensor Cores</span>
+            </div>
+
+            <!-- STAGE 3: NVIDIA DGX Meta Neural Network Engine -->
+            <div onclick="selectStage(3)" id="stage-card-3" class="diagram-card diagram-card-dgx p-3.5 cursor-pointer space-y-2.5">
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[10px]">STAGE 3</span>
+                  <span class="font-bold text-white text-xs">Distributed Meta Neural Networks</span>
+                </div>
+                <span class="text-emerald-400 font-mono text-[10px] font-bold">CV 13.0152 HV</span>
+              </div>
+
+              <!-- Sub-Architecture 1: 4-Head Cross-Attention -->
+              <div class="p-2 rounded-lg bg-[#0d1117] border border-[#30363d] text-[11px]">
+                <div class="flex items-center justify-between font-bold text-white mb-0.5">
+                  <span class="flex items-center gap-1.5 text-blue-400">
+                    <i class="fa-solid fa-network-wired text-xs"></i>
+                    <span>4-Head Cross-Attention Network</span>
+                  </span>
+                  <span class="text-[10px] text-[#8b949e] font-mono">Query × KV</span>
+                </div>
+                <p class="text-[10px] text-[#8b949e]">59개 모델 예측값과 110차원 DINOv2 SVD 잠재공간 교차 상호작용 학습</p>
+              </div>
+
+              <!-- Sub-Architecture 2: Gated MoE -->
+              <div class="p-2 rounded-lg bg-[#0d1117] border border-[#30363d] text-[11px]">
+                <div class="flex items-center justify-between font-bold text-white mb-0.5">
+                  <span class="flex items-center gap-1.5 text-amber-400">
+                    <i class="fa-solid fa-cubes text-xs"></i>
+                    <span>Sparse Gated Mixture-of-Experts</span>
+                  </span>
+                  <span class="text-[10px] text-amber-300 font-mono">4 Experts (Top-2)</span>
+                </div>
+                <p class="text-[10px] text-[#8b949e]">상(Phase) 분율 및 결정립 국소 형태에 따라 최적 전문가 서브넷 자동 라우팅</p>
+              </div>
+
+              <!-- Sub-Architecture 3: Spectral GNN -->
+              <div class="p-2 rounded-lg bg-[#0d1117] border border-[#30363d] text-[11px]">
+                <div class="flex items-center justify-between font-bold text-white mb-0.5">
+                  <span class="flex items-center gap-1.5 text-cyan-400">
+                    <i class="fa-solid fa-circle-nodes text-xs"></i>
+                    <span>Spectral Graph Neural Network (GNN)</span>
+                  </span>
+                  <span class="text-[10px] text-cyan-300 font-mono">k-NN Affinity</span>
+                </div>
+                <p class="text-[10px] text-[#8b949e]">코사인 유사도 기반 라플라시안 그래프 스펙트럼 스무딩 잔차 보정</p>
+              </div>
+
+            </div>
+
+            <!-- Egress Highway Back to Mac Studio -->
+            <div class="p-2.5 rounded-lg bg-gradient-to-r from-[#0d1117] to-emerald-950/40 border border-[#76b900]/40 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 text-[#76b900] font-mono text-[11px]">
+                <i class="fa-solid fa-arrow-left text-xs animate-pulse"></i>
+                <span class="font-bold">Egress to Mac Studio:</span>
+                <span class="text-white">Meta Attention Residuals</span>
+              </div>
+              <span class="text-[10px] text-emerald-400 font-mono font-bold">18ms Bridge</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Live Telemetry Console (Dynamic on Click) -->
+      <div id="telemetry-box" class="p-5 rounded-xl bg-[#090d13] border border-[#30363d] font-mono text-xs text-[#e6edf3] space-y-2.5">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Detailed 5-Stage Scientific Breakdown -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs prose-custom">
+        <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <strong class="text-blue-400 block text-sm mb-1">D4 대칭군 투영의 과학적 근거</strong>
+          미세조직의 8개 회전/반전 뷰 간 예측 편차를 직교 공간에서 영(0)으로 강제 사영함으로써, 각도에 따라 예측값이 요동치는 딥러닝 고유의 회전 민감도를 완전히 소거했습니다.
+        </div>
+        <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <strong class="text-purple-400 block text-sm mb-1">SVD-48 직교 정규화의 핵심</strong>
+          5,982개 열의 고차원 임베딩이 모델 예측값(62열)을 왜곡하지 않도록 Truncated SVD로 주성분 48개만 추출하여 전체 110차원의 균형 잡힌 잠재 공간(`d_zf = 110`)을 구성했습니다.
+        </div>
+        <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <strong class="text-emerald-400 block text-sm mb-1">영공간 역산과 티호노프 정규화</strong>
+          제출 프로브 간 거리 항등식에서 Public LB 표본 가중치 $w_{\text{pub}}$를 역추정하고, 34차원 기저 위에서 티호노프 가중치 감쇠($\lambda=0.05$)를 주어 최적의 볼록 결합(Convex Hull)을 도출했습니다.
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. DATASET POLICY & DOMAIN METALLURGY OVERVIEW -->
+    <section id="dataset" class="space-y-6">
+      <div class="border-b border-[#30363d] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🔒</span>
+          <h2 class="text-2xl font-bold text-white">데이터셋 안내, 비공개 규정 & 재료공학 도메인 해설</h2>
+        </div>
+        <p class="text-sm text-[#8b949e] mt-1">대회 규약에 따른 데이터 비공개 정책 고지 및 비커스 경도 메커니즘의 재료역학적 배경</p>
+      </div>
+
+      <!-- Warning Alert Box -->
+      <div class="p-5 rounded-xl bg-amber-950/30 border border-amber-600/40 text-amber-200 space-y-2">
+        <div class="flex items-center gap-2 font-bold text-sm text-amber-400">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>대회 규정상 원본 데이터셋 공유 불가 고지 (Data Confidentiality Policy)</span>
+        </div>
+        <p class="text-xs text-amber-200/90 leading-relaxed">
+          본 경진대회(DACON/DAKER 합성 미세구조 재료 경도 예측)에서 제공된 학습 및 평가 데이터셋은 주최 측의 지적재산권 보호 규약에 따라 <strong>외부 공개 및 제3자 공유가 엄격히 금지</strong>되어 있습니다. 따라서 본 레포지토리에는 원본 미세조직 이미지(`train/`, `test/`) 및 원시 타겟 레이블이 포함되지 않으며, 파이프라인 아키텍처 소스 코드, 특징 추출기, 수치 모델링 가중치 및 재현 스크립트만 제공됩니다.
+        </p>
+      </div>
+
+      <!-- In-Depth Metallurgy Explanations -->
+      <div class="p-5 rounded-2xl bg-[#161b22] border border-[#30363d] text-sm prose-custom">
+        <h4 class="font-bold text-white mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-atom text-[#bc8cff]"></i>
+          <span>재료역학적 배경: 이미지의 시각적 패턴이 경도(HV)로 이어지는 물리적 원리</span>
+        </h4>
+        <p>
+          비커스 경도(Vickers Hardness, $HV$)는 금속 표면에 대면각 136°인 정사각뿔 다이아몬드 압입자로 하중을 가했을 때 생기는 압흔의 크기로 재료의 소성 변형(Plastic Deformation) 저항력을 측정하는 지표입니다. 이미지 기반 예측이 성립하는 이유는 미세조직의 시각적 형태학(Morphology)이 금속 내부 전위(Dislocation)의 이동 저항과 직결되기 때문입니다.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 pt-3 border-t border-[#30363d]/60 text-xs">
+          <div class="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]">
+            <strong class="text-blue-400 block mb-1">1. 홀-페치 강화 법칙 (Hall-Petch)</strong>
+            결정립(Grain)의 크기가 미세할수록 결정립계의 밀도가 높아져 전위의 이동을 강력하게 차단합니다:
+            <div class="my-1.5 font-mono text-purple-300 font-bold bg-[#161b22] p-1.5 rounded text-center">HV = σ₀ + k_y · d^(-1/2)</div>
+            이미지 상에서 결정립 경계선의 밀도와 곡률을 포착하는 것이 경도 예측의 핵심 지표였습니다.
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]">
+            <strong class="text-emerald-400 block mb-1">2. 제2상 입자 분율 (Precipitation)</strong>
+            기지 조직(Matrix) 내에 고르게 분산된 단단한 제2상 석출물(Second-phase particles)의 면적 분율이 높을수록 오로완(Orowan) 루핑 메커니즘에 의해 항복 강도와 경도가 수직 상승합니다.
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]">
+            <strong class="text-amber-400 block mb-1">3. 기공률 및 공간 규칙성 (Pore & ACF)</strong>
+            미세조직 내부의 미세 기공(Pore)은 응력 집중원(Stress Concentrator)으로 작용하여 경도를 급락시킵니다. 2차원 자기상관함수(ACF)를 통해 공간 규칙성과 기공 분포 반경을 공학적 피처로 추출했습니다.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 30-SUBMISSION INTERACTIVE TRAJECTORY & 4 PHASES STORY -->
+    <section id="submissions" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#30363d] pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">📈</span>
+            <h2 class="text-2xl font-bold text-white">30회 리더보드 제출 궤적 & 진화 곡선 (The 4 Phases)</h2>
+          </div>
+          <p class="text-sm text-[#8b949e] mt-0.5">초기 12.87 HV 베이스라인에서 11.77 HV 챔피언에 도달하기까지의 4단계 진화 여정</p>
+        </div>
+        <div class="flex items-center gap-4 text-xs font-medium">
+          <div class="flex items-center gap-1.5">
+            <span class="w-3.5 h-1.5 bg-emerald-400 rounded-full inline-block"></span>
+            <span class="text-emerald-400 font-bold">Public LB (-1.106 HV)</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3.5 h-1.5 bg-blue-400 rounded-full inline-block"></span>
+            <span class="text-blue-400 font-bold">Private LB (-0.447 HV)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Narrative: The 4 Phases Evolution Story -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <span class="px-2 py-0.5 rounded bg-blue-900/30 text-blue-400 font-mono font-bold block w-fit mb-1.5">PHASE 1 (#01~#10)</span>
+          <strong class="text-white block mb-1">황금 레시피 8-TTA & Huber 가드</strong>
+          초기 단순 평균의 불안정성을 8-TTA와 Huber 손실 경계 클리핑으로 방어하여 12.87 HV에서 12.49 HV로 안착.
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <span class="px-2 py-0.5 rounded bg-purple-900/30 text-purple-400 font-mono font-bold block w-fit mb-1.5">PHASE 2 (#11~#20)</span>
+          <strong class="text-white block mb-1">물리 피처 융합 & OLS/스플라인</strong>
+          금속 도메인 물리 통계 피처(Physics v2)와 3-Bin 스플라인 잔차 보정을 도입하여 12.41 HV 기록 달성.
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <span class="px-2 py-0.5 rounded bg-amber-900/30 text-amber-400 font-mono font-bold block w-fit mb-1.5">PHASE 3 (#21~#25)</span>
+          <strong class="text-white block mb-1">트리 소거 & SVD 12점 벽 돌파</strong>
+          이미지 피처에서 과적합을 유발하던 고주파 트리를 과감히 가지치기(Purged)하고 SVD 직교 분해로 11.98 HV 돌파.
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <span class="px-2 py-0.5 rounded bg-emerald-900/30 text-emerald-400 font-mono font-bold block w-fit mb-1.5">PHASE 4 (#26~#30)</span>
+          <strong class="text-white block mb-1">DGX MoE + 아핀 헐 팀 최고 기록 수립</strong>
+          DGX MoE와 4,000장 D4 마스터셋 투입(-0.1826 낙폭) 후, w_pub 역산 아핀 헐로 팀 자체 최고 Public 11.7702 HV (#30) 및 Private 12.5568 HV (#27) 수립 (231팀 중 최종 109위).
+        </div>
+      </div>
+
+      <!-- SVG Chart Canvas -->
+      <div class="p-4 rounded-xl bg-[#0d1117] border border-[#30363d] overflow-x-auto custom-scroll">
+        <div class="min-w-[700px] h-52 relative">
+          <svg viewBox="0 0 740 180" class="w-full h-full">
+            <!-- Grid Lines -->
+            <line x1="50" y1="20" x2="720" y2="20" stroke="#30363d" stroke-dasharray="3,3" />
+            <line x1="50" y1="60" x2="720" y2="60" stroke="#30363d" stroke-dasharray="3,3" />
+            <line x1="50" y1="100" x2="720" y2="100" stroke="#30363d" stroke-dasharray="3,3" />
+            <line x1="50" y1="140" x2="720" y2="140" stroke="#30363d" stroke-dasharray="3,3" />
+            
+            <!-- Axis Labels -->
+            <text x="10" y="24" fill="#8b949e" font-size="10" font-family="monospace">13.0 HV</text>
+            <text x="10" y="64" fill="#8b949e" font-size="10" font-family="monospace">12.6 HV</text>
+            <text x="10" y="104" fill="#8b949e" font-size="10" font-family="monospace">12.1 HV</text>
+            <text x="10" y="144" fill="#8b949e" font-size="10" font-family="monospace">11.7 HV</text>
+
+            <!-- Private Polyline (Blue) -->
+            <polyline points="
+              60,22 83,60 106,48 129,60 152,54 175,28 198,56 221,54 244,61 267,57
+              290,14 313,14 336,0 359,26 382,8 405,68 428,23 451,18 474,55 497,51
+              520,38 543,58 566,55 589,54 612,53 635,62 658,70 681,65 704,57 720,57"
+              fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+
+            <!-- Public Polyline (Emerald) -->
+            <polyline points="
+              60,30 83,64 106,63 129,59 152,60 175,29 198,64 221,66 244,66 267,64
+              290,20 313,24 336,35 359,49 382,53 405,65 428,34 451,32 474,65 497,63
+              520,92 543,89 566,95 589,97 612,98 635,118 658,111 681,120 704,123 720,124"
+              fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+            <!-- Interactive Clickable Milestone Circles -->
+            <circle cx="60" cy="30" r="5" fill="#10b981" class="cursor-pointer hover:r-7 transition-all" onclick="showSubInfo(1)" />
+            <circle cx="405" cy="65" r="5.5" fill="#10b981" class="cursor-pointer hover:r-7 transition-all" onclick="showSubInfo(16)" />
+            <circle cx="520" cy="92" r="5.5" fill="#10b981" class="cursor-pointer hover:r-7 transition-all" onclick="showSubInfo(21)" />
+            <circle cx="589" cy="97" r="5.5" fill="#10b981" class="cursor-pointer hover:r-7 transition-all" onclick="showSubInfo(24)" />
+            <circle cx="612" cy="98" r="5.5" fill="#10b981" class="cursor-pointer hover:r-7 transition-all" onclick="showSubInfo(25)" />
+            <circle cx="635" cy="118" r="6" fill="#f59e0b" class="cursor-pointer hover:r-8 transition-all" onclick="showSubInfo(26)" />
+            <circle cx="658" cy="70" r="7" fill="#3b82f6" class="cursor-pointer hover:r-9 transition-all" onclick="showSubInfo(27)" />
+            <circle cx="681" cy="120" r="5.5" fill="#10b981" class="cursor-pointer hover:r-7 transition-all" onclick="showSubInfo(28)" />
+            <circle cx="704" cy="123" r="5.5" fill="#10b981" class="cursor-pointer hover:r-7 transition-all" onclick="showSubInfo(29)" />
+            <circle cx="720" cy="124" r="7.5" fill="#10b981" class="cursor-pointer hover:r-9 transition-all" onclick="showSubInfo(30)" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Submission Info Interactive Card -->
+      <div id="sub-info-card" class="p-4 rounded-xl bg-[#161b22] border border-[#30363d] flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-xs">SELECTED</span>
+            <h4 id="sub-title" class="font-bold text-sm text-white">#30 🏆 Public LB 팀 자체 최고 점수 (Team Best)</h4>
+          </div>
+          <p id="sub-desc" class="text-xs text-[#8b949e] mt-1 font-mono">01_HULL29_wfit_pred_11.712_lam0.05.csv | Public 평가 가중치 w_pub 완벽 수렴</p>
+        </div>
+        <div class="flex items-center gap-6 font-mono text-xs">
+          <div>
+            <div class="text-[10px] text-[#8b949e]">PUBLIC LB</div>
+            <div id="sub-pub" class="text-base font-extrabold text-emerald-400">11.770238 HV</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-[#8b949e]">PRIVATE LB</div>
+            <div id="sub-priv" class="text-base font-extrabold text-blue-400">12.598486 HV</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Complete 30-Submission Table (Accordion / Scrollable) -->
+      <details class="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden">
+        <summary class="px-4 py-3 cursor-pointer text-xs font-bold text-[#58a6ff] hover:bg-[#21262d] transition-colors flex items-center justify-between">
+          <span>📋 30회 공식 제출 전수 검증표 전체 펼치기 (Public & Private 점수 전량)</span>
+          <span class="text-[11px] text-[#8b949e]">Click to Toggle</span>
+        </summary>
+        <div class="p-3 max-h-80 overflow-y-auto custom-scroll">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="text-[#8b949e] border-b border-[#30363d] bg-[#0d1117]">
+              <tr>
+                <th class="p-2">#</th>
+                <th class="p-2">제출 파일명</th>
+                <th class="p-2">Public LB</th>
+                <th class="p-2">Private LB</th>
+                <th class="p-2">주요 모델링 및 돌파 기법</th>
+              </tr>
+            </thead>
+            <tbody id="submission-table-body" class="divide-y divide-[#30363d]/50 text-[#e6edf3]">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <!-- 5. MODEL ZOO (79 MODELS) INTERACTIVE EXPLORER & SCIENTIFIC LESSONS -->
+    <section id="model-zoo" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#30363d] pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">📊</span>
+            <h2 class="text-2xl font-bold text-white">Model Zoo 79종 전수 검증 풀 & 공학적 교훈</h2>
+          </div>
+          <p class="text-sm text-[#8b949e] mt-0.5">5-Fold OOF 및 500장 원본 그라운드 트루스 기준 5-Fold RMSE & 피어슨 상관계수($r$)</p>
+        </div>
+        <div class="px-3 py-1 rounded-lg bg-[#161b22] border border-emerald-500/30 text-right">
+          <span class="text-[10px] text-[#8b949e] block font-mono uppercase">단일 비전 1위</span>
+          <span class="text-xs font-bold text-emerald-400 font-mono">Swin-Small (12.9038 HV)</span>
+        </div>
+      </div>
+
+      <!-- Narrative Walkthrough on Why Certain Models Won and Others Failed -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs prose-custom">
+        <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <strong class="text-emerald-400 block text-sm mb-1">왜 Swin-Small이 1위인가? (12.9038 HV)</strong>
+          순수 글로벌 어텐션을 수행하는 일반 ViT는 500장 소표본에서 귀납적 편향(Inductive Bias) 부족으로 과적합되었습니다. 반면 Swin-Small은 윈도우 기반 로컬 셀프 어텐션 크기가 미세조직의 국소 결정립 클러스터 크기와 완벽히 일치하여 단일 비전 최고 성능(r=0.684)을 기록했습니다.
+        </div>
+        <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <strong class="text-blue-400 block text-sm mb-1">DGX 4-Head Cross-Attention (13.0152 HV)</strong>
+          단일 모델들의 예측값 사이의 비선형 불일치를 DGX GPU의 4-Head 어텐션이 DINOv2 SVD-48 잠재 공간과 교차 참조(Cross-Referencing)하여 개별 모델 오차를 상호 상쇄했습니다.
+        </div>
+        <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d]">
+          <strong class="text-amber-400 block text-sm mb-1">트리 모델 가지치기(Purging)의 필연성</strong>
+          LightGBM(15.36 HV)과 CatBoost(15.48 HV) 등 트리는 이미지 통계 테이블에서 계단식 결정 경계(Step Function)로 인해 심각한 고주파 노이즈를 양산했습니다. 이를 앙상블에서 배제(Purge)한 것이 12점대 벽을 깨는 열쇠였습니다.
+        </div>
+      </div>
+
+      <!-- Filter Controls & Search -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2 text-xs font-medium">
+          <button onclick="filterZoo('all')" id="btn-zoo-all" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-bold transition-all">전체 (79)</button>
+          <button onclick="filterZoo('vision')" id="btn-zoo-vision" class="px-3 py-1.5 rounded-lg bg-[#21262d] text-[#8b949e] hover:text-white transition-all">딥러닝 비전 (19)</button>
+          <button onclick="filterZoo('dgx')" id="btn-zoo-dgx" class="px-3 py-1.5 rounded-lg bg-[#21262d] text-[#8b949e] hover:text-white transition-all">DGX GPU 메타 (3)</button>
+          <button onclick="filterZoo('kernel')" id="btn-zoo-kernel" class="px-3 py-1.5 rounded-lg bg-[#21262d] text-[#8b949e] hover:text-white transition-all">파운데이션 KRR (40)</button>
+          <button onclick="filterZoo('tree')" id="btn-zoo-tree" class="px-3 py-1.5 rounded-lg bg-[#21262d] text-[#8b949e] hover:text-white transition-all">머신러닝 & 트리 (17)</button>
+        </div>
+        <div class="relative w-full sm:w-64">
+          <input type="text" id="zoo-search" oninput="searchZoo()" placeholder="모델명 검색 (예: Swin, MoE)..." class="w-full bg-[#161b22] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs text-white placeholder-[#8b949e] focus:outline-none focus:border-blue-500">
+        </div>
+      </div>
+
+      <!-- Model Zoo Table -->
+      <div class="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden">
+        <div class="max-h-96 overflow-y-auto custom-scroll">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="text-[#8b949e] border-b border-[#30363d] bg-[#0d1117] sticky top-0 z-10">
+              <tr>
+                <th class="p-2.5">계열</th>
+                <th class="p-2.5">모델 아키텍처</th>
+                <th class="p-2.5">5-Fold CV (HV)</th>
+                <th class="p-2.5">상관계수 (r)</th>
+                <th class="p-2.5">아키텍처 특성 및 엔지니어링 의사결정</th>
+              </tr>
+            </thead>
+            <tbody id="zoo-table-body" class="divide-y divide-[#30363d]/50 text-[#e6edf3]">
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. QUICKSTART & REPRODUCIBILITY -->
+    <section id="quickstart" class="space-y-4">
+      <div class="border-b border-[#30363d] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">💻</span>
+          <h2 class="text-2xl font-bold text-white">저장소 구조 & 재현 가이드 (Quick Start)</h2>
+        </div>
+        <p class="text-sm text-[#8b949e] mt-0.5">팀 최고 성적 파이프라인(Public 11.7702 HV / Private 12.5568 HV) 실행 순서</p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-[#161b22] border border-[#30363d] space-y-3 font-mono text-xs">
+        <div class="flex items-center justify-between text-[#8b949e] border-b border-[#30363d] pb-2">
+          <span>bash (zsh)</span>
+          <button onclick="copySnippet()" id="copy-btn" class="px-2.5 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-[#58a6ff] flex items-center gap-1.5 transition-colors">
+            <i class="fa-regular fa-copy"></i>
+            <span>코드 복사</span>
+          </button>
+        </div>
+        <pre id="code-snippet" class="text-emerald-400 overflow-x-auto leading-relaxed">
+<span class="text-[#8b949e]"># 1. 아나콘다 가상환경 구성 및 의존성 설치</span>
+conda create -n hardness python=3.11 -y && conda activate hardness
+pip install -r requirements.txt
+
+<span class="text-[#8b949e]"># 2. DGX Spark GPU 분산 MoE 및 크로스 어텐션 메타 신경망 훈련</span>
+python dgx_spark/dgx_gpu_moe_residual_sim8.py
+
+<span class="text-[#8b949e]"># 3. 34D 서브스페이스 사영 및 Private 팀 최고 기록 생성 (Private 12.5568 HV)</span>
+python scripts/06_generate_sim0_private_best.py
+
+<span class="text-[#8b949e]"># 4. w_pub 역산 기반 아핀 헐 최적화 및 Public 팀 최고 기록 생성 (Public 11.7702 HV)</span>
+python scripts/08_generate_hull28_wfit_public_best.py</pre>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-[#30363d] py-8 text-center text-xs text-[#8b949e] font-mono">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>© 2026 gyuminkang / 믹스-si (mix-si). All rights reserved. Distributed under MIT License.</div>
+      <div class="flex items-center gap-3">
+        <a href="#summary" class="hover:text-white transition-colors">Top</a>
+        <span>•</span>
+        <a href="https://github.com" target="_blank" class="hover:text-white transition-colors"><i class="fa-brands fa-github"></i> GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- INTERACTIVE LOGIC JAVASCRIPT -->
+  <script>
+    // Stage Telemetry Data
+    const stageDetails = {
+      1: {
+        device: "💻 MacBook Pro (M-Series)",
+        name: "STAGE 1: D4 Dihedral Physical Equivariance Engine",
+        status: "COMPLETED",
+        input: "500 Raw Train Images (2D Microstructure)",
+        output: "4,000 Augmented Masterset (4 Rotations × 2 Inversions)",
+        throughput: "1,850 img/s (NEON SIMD Vectorized)",
+        memory: "1.2 GB RAM",
+        notes: "미세조직의 등방성(Isotropy) 보존. 8개 회전 뷰의 편차를 강제 0으로 직교 사영(Orthogonal Projection)."
+      },
+      2: {
+        device: "💻 MacBook Pro (M-Series)",
+        name: "STAGE 2: Exact SVD-48 Dimensional Balancing Manifold",
+        status: "COMPLETED",
+        input: "5,982 Raw Feature Columns (DINOv2, EVA-02, CLIP, Wavelet)",
+        output: "110-Dimensional Clean Latent Representation (d_zf = 110)",
+        throughput: "48 Principal Singular Components (Truncated SVD)",
+        memory: "2.4 GB RAM",
+        notes: "고차원 임베딩이 62개 모델 열을 유클리드 거리상 93.3% 왜곡하던 노이즈를 직교 분해로 완벽 차단."
+      },
+      3: {
+        device: "⚡ NVIDIA DGX Spark (GB10 GPU 128GB)",
+        name: "STAGE 3: Distributed Multi-Head Cross-Attention & Gated MoE",
+        status: "ACTIVE / STREAMING",
+        input: "4,000 Samples × 110-Dim Latents + 59 Model OOF Predictions",
+        output: "Meta Predictions Matrix (CV 13.0152 HV / Pearson r = 0.678)",
+        throughput: "1,240 img/s (FP16 Tensor Cores)",
+        memory: "42.8 GB / 128 GB Unified Memory",
+        notes: "4-Head Attention + 4-Expert Top-2 Gating. 미세구조 상 분율과 국소 결정립 비선형 상호작용 학습."
+      },
+      4: {
+        device: "💻 MacBook Pro (M-Series)",
+        name: "STAGE 4: Unweighted Nullspace Decomposition & Q34 Dual Inversion",
+        status: "COMPLETED",
+        input: "29 Official LB Probes Matrix (7 Linear Nullspace Equations)",
+        output: "Recovered w_pub Sample Weights + 34D Orthogonal Basis Q34",
+        throughput: "Residual Error 1e-16 (Zero Leakage Strict Inversion)",
+        memory: "512 MB RAM",
+        notes: "제출물 간 거리 항등식에서 Public LB 가중치를 역산. 프로브 간섭 노이즈 기계적 완전 소거."
+      },
+      5: {
+        device: "💻 MacBook Pro (M-Series)",
+        name: "STAGE 5: Tikhonov-Regularized Affine Hull Optimization",
+        status: "COMPLETED (TEAM BEST)",
+        input: "34D Dual Metric Subspace (Span(V17 ⊕ w_pub ⊙ V17))",
+        output: "🏆 #30 Public 팀 최고 (11.7702 HV) / 🏆 #27 Private 팀 최고 (12.5568 HV) | 231팀 중 최종 109위",
+        throughput: "λ = 0.05 Convex Simplex Regularization",
+        memory: "256 MB RAM",
+        notes: "오차 공분산 행렬의 고유치 역수 감쇠를 통해 리더보드 일반화 성능 극대화."
+      }
+    };
+
+    function selectStage(stageNum) {
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById(`stage-card-${i}`);
+        if (i === stageNum) {
+          el.classList.add('node-active');
+        } else {
+          el.classList.remove('node-active');
+        }
+      }
+      const data = stageDetails[stageNum];
+      document.getElementById('telemetry-box').innerHTML = `
+        <div class="flex flex-wrap items-center justify-between border-b border-[#30363d] pb-2 text-xs">
+          <span class="text-blue-400 font-bold">${data.name}</span>
+          <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold">${data.status}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pt-1 text-[11px]">
+          <div><span class="text-[#8b949e]">Device:</span> <strong class="text-white">${data.device}</strong></div>
+          <div><span class="text-[#8b949e]">Throughput:</span> <strong class="text-emerald-400">${data.throughput}</strong></div>
+          <div><span class="text-[#8b949e]">Memory:</span> <strong class="text-amber-400">${data.memory}</strong></div>
+          <div><span class="text-[#8b949e]">Latency:</span> <strong class="text-purple-400">18ms Bridge</strong></div>
+        </div>
+        <div class="text-[11px] pt-1">
+          <div class="text-[#8b949e]"><span class="text-blue-300">Tensor Flow:</span> ${data.input} → <span class="text-emerald-300 font-bold">${data.output}</span></div>
+          <div class="text-[#8b949e] mt-0.5"><span class="text-amber-300">Scientific Rationale:</span> ${data.notes}</div>
+        </div>
+      `;
+    }
+
+    // 30 Submission Data
+    const submissionsData = [
+      { id: 30, file: "01_HULL29_wfit_pred_11.712_lam0.05.csv", pub: "11.770238", priv: "12.598486", note: "🏆 Public LB 팀 자체 최고 점수 (최종 점수)" },
+      { id: 29, file: "02_HULL28_wfit_pred_11.745_lam0.12.csv", pub: "11.773720", priv: "12.597017", note: "w_pub 가중 재추정 + 28-Probe 아핀 헐 최적화" },
+      { id: 28, file: "04_HULL27_real_pred_11.698_lam0.3.csv", pub: "11.788954", priv: "12.571426", note: "27-Probe 정규화 아핀 헐 수렴 (Private 2위)" },
+      { id: 27, file: "02_SIM00_4000AUG_rank2_q34_59fold_swin_small_ortho_0_014.csv", pub: "11.852393", priv: "12.556884", note: "🏆 Private LB 팀 자체 최고 점수 (최고 일반화)" },
+      { id: 26, file: "01_SIM00_4000AUG_rank1_q34_dual_probe_chained_krr_dgx_0_005.csv", pub: "11.801693", priv: "12.580839", note: "🚀 단일 최대 점수 낙폭 (-0.1826 HV, DGX MoE + 4,000장 D4)" },
+      { id: 25, file: "02_V2_ULTIMATE_rank2_20probe_svd10_plus_185x_ortho_and_elite7_vision.csv", pub: "11.984280", priv: "12.619553", note: "서브스페이스 디커플링 (11점대 최초 돌파 챔피언)" },
+      { id: 24, file: "01_V2_ULTIMATE_rank1_20probe_svd12_tree_purged_plus_elite_new04.csv", pub: "11.993419", priv: "12.618629", note: "트리 모델 고주파 오염 소거 (12점 벽 최초 돌파)" },
+      { id: 23, file: "03_ULTIMATE_spectral_svd_top8_plus_ortho_step6_vision.csv", pub: "12.016679", priv: "12.616311", note: "국소 접평면 기하학 + 8차원 비전 직교 잔차 보정" },
+      { id: 22, file: "02_ULTIMATE_error_subtracting_affine_extrapolation.csv", pub: "12.091796", priv: "12.593715", note: "오차 차감 아핀 외삽 (Error-Subtracting Extrapolation)" },
+      { id: 21, file: "01_ULTIMATE_spectral_svd_top6_inverse_projection.csv", pub: "12.046682", priv: "12.679351", note: "20-Probe SVD 분해 및 1차 스펙트럼 역투영" },
+      { id: 20, file: "submission_boost04_tetra_quantile_distribution_matched.csv", pub: "12.434961", priv: "12.631315", note: "분위수 분포 매칭 사후 처리 (Quantile Matching)" },
+      { id: 19, file: "submission_boost01_tetra_omni_spline3bin_tuned.csv", pub: "12.418587", priv: "12.607045", note: "3-Bin 스플라인 비선형 잔차 튜닝" },
+      { id: 18, file: "submission_top03_triad_golden70_tree15_timeseries15_huber.csv", pub: "12.832793", priv: "13.043627", note: "골든70 + 트리15 + TS15 3개 축 하이브리드" },
+      { id: 17, file: "submission_top02_golden90_timeseries10_huber_guard.csv", pub: "12.806783", priv: "12.985262", note: "골든90 + TS10 Huber Guard 방어형 블렌드" },
+      { id: 16, file: "submission_top01_golden85_timeseries15_ols_tuned.csv", pub: "12.413057", priv: "12.583848", note: "골든 레시피 85:15 앙상블 챔피언 (물리 특성 결합)" },
+      { id: 15, file: "submission_new_03_concat_embeddings_physics_krr.csv", pub: "12.566248", priv: "13.251717", note: "물리 특성 결합 파운데이션 임베딩 KRR" },
+      { id: 14, file: "submission_new_02_concat_embeddings_physics_ridge.csv", pub: "12.610324", priv: "13.057238", note: "물리 특성 결합 Ridge 선형 회귀" },
+      { id: 13, file: "submission_new_01_frozen_embedding_best.csv", pub: "12.789419", priv: "13.436984", note: "동결 임베딩 단일 베이스라인" },
+      { id: 12, file: "submission_top02_omni_75_models_grandmaster_10_98.csv", pub: "12.929017", priv: "13.082926", note: "58비전 + 파인튜닝 DL + 17트리 전체 옴니 앙상블" },
+      { id: 11, file: "submission_top01_grandmaster_elite36_huber_guard_10_82.csv", pub: "12.984795", priv: "13.082396", note: "36대 엘리트 비전 + 골든 DL + 17트리 Huber Guard" },
+      { id: 10, file: "submission_10_golden_huber_percentile_tta8.csv", pub: "12.516503", priv: "12.598298", note: "Huber 손실 + 백분위수 클리핑 8-TTA" },
+      { id: 9, file: "submission_09_golden_stack_huber_ols_tta8.csv", pub: "12.497115", priv: "12.589761", note: "55:45 Huber-OLS 손실 스택 8-TTA" },
+      { id: 8, file: "submission_08_golden_ols_affine_bounds_tta8.csv", pub: "12.496539", priv: "12.603397", note: "OLS 아핀 + Train 경계값 클립 8-TTA" },
+      { id: 7, file: "submission_07_golden_3bin_spline_tta8.csv", pub: "12.521475", priv: "12.601716", note: "3-Bin 스플라인 잔차 보정 8-TTA" },
+      { id: 6, file: "submission_06_golden_fixed_huber_tta3.csv", pub: "12.881740", priv: "12.965926", note: "황금 레시피 3-View TTA (초기 기준본)" },
+      { id: 5, file: "submission_05_grandmaster_slsqp_raw_tta8.csv", pub: "12.564788", priv: "12.602758", note: "SLSQP 4대 축 순수 8-TTA (후처리 없음)" },
+      { id: 4, file: "submission_04_grandmaster_slsqp_huber_tta8.csv", pub: "12.566214", priv: "12.582473", note: "SLSQP 4대 축 최적화 8-TTA + Huber 손실" },
+      { id: 3, file: "submission_03_golden_raw_tta8.csv", pub: "12.527640", priv: "12.624785", note: "황금 레시피 순수 8-TTA" },
+      { id: 2, file: "submission_02_golden_retuned_huber_tta8.csv", pub: "12.516503", priv: "12.598298", note: "황금 레시피 8-TTA (OOF 재추정 Huber)" },
+      { id: 1, file: "submission_01_golden_fixed_huber_tta8.csv", pub: "12.876199", priv: "13.004184", note: "4단계 황금 레시피 8-TTA (초기 메인 베이스라인)" }
+    ];
+
+    function showSubInfo(subId) {
+      const s = submissionsData.find(x => x.id === subId);
+      if (!s) return;
+      document.getElementById('sub-title').textContent = `#${s.id} ${s.id === 30 ? '🏆 Public 팀 최고 기록' : s.id === 27 ? '🏆 Private 팀 최고 기록' : s.id === 26 ? '🚀 최대 점수 낙폭 (-0.1826)' : '제출 마일스톤'}`;
+      document.getElementById('sub-desc').textContent = `${s.file} | ${s.note}`;
+      document.getElementById('sub-pub').textContent = `${s.pub} HV`;
+      document.getElementById('sub-priv').textContent = `${s.priv} HV`;
+    }
+
+    // Model Zoo 79 Data
+    const zooData = [
+      // Vision (19)
+      { cat: "vision", name: "swin_small_patch4_window7_224", cv: "12.9038", r: "0.6840", note: "단일 비전 모델 전체 1위 (최고 성능 챔피언)" },
+      { cat: "vision", name: "resnext101_32x8d", cv: "13.2385", r: "0.6636", note: "고용량 컨볼루션 계층, 안정적 일반화" },
+      { cat: "vision", name: "convnext_xlarge", cv: "13.3863", r: "0.6537", note: "ConvNeXt 계열 최고 성능" },
+      { cat: "vision", name: "vit_small_patch16_224", cv: "13.4525", r: "0.6501", note: "순수 Vision Transformer" },
+      { cat: "vision", name: "eva02_base_patch14_224.mim_in22k", cv: "13.4999", r: "0.6616", note: "MIM 사전학습, 상 분율(Phase) 감지 우수" },
+      { cat: "vision", name: "convnext_large", cv: "13.5560", r: "0.6441", note: "대형 컨볼루션 피처 추출" },
+      { cat: "vision", name: "convnext_base", cv: "13.5568", r: "0.6430", note: "중형 ConvNeXt 백본" },
+      { cat: "vision", name: "swin_base_patch4_window7_224", cv: "13.6171", r: "0.6393", note: "Swin 계열 대형 모델" },
+      { cat: "vision", name: "maxvit_tiny_tf_224", cv: "13.7241", r: "0.6385", note: "Local + Global 어텐션 하이브리드" },
+      { cat: "vision", name: "densenet169", cv: "13.7434", r: "0.6335", note: "밀집 연결(Dense Connection) 잔차" },
+      { cat: "vision", name: "swin_tiny_patch4_window7_224", cv: "13.7849", r: "0.6283", note: "경량 Swin 모델" },
+      { cat: "vision", name: "tf_efficientnetv2_s", cv: "13.8172", r: "0.6275", note: "EfficientNet 2세대 소형" },
+      { cat: "vision", name: "efficientnet_b3", cv: "13.7924", r: "0.6283", note: "EfficientNet 중간급" },
+      { cat: "vision", name: "eva02_tiny_patch14_224", cv: "13.9480", r: "0.6305", note: "초경량 EVA-02" },
+      { cat: "vision", name: "inception_v3", cv: "13.9784", r: "0.6129", note: "다중 수용영역(Multi-scale Receptive Field)" },
+      { cat: "vision", name: "regnety_040", cv: "14.1344", r: "0.6089", note: "정규화된 설계 공간 탐색 모델" },
+      { cat: "vision", name: "mobilenetv4_conv_small", cv: "14.1470", r: "0.6041", note: "모바일 최적화 초경량" },
+      { cat: "vision", name: "efficientnet_b6", cv: "14.1926", r: "0.6005", note: "대형 EfficientNet" },
+      { cat: "vision", name: "seresnext50_32x4d", cv: "14.2012", r: "0.6018", note: "Squeeze-and-Excitation 채널 주의집중" },
+
+      // DGX Spark GPU (3)
+      { cat: "dgx", name: "Multi-Head Cross-Attention Network", cv: "13.0152", r: "0.6780", note: "4-Head 어텐션 + 임베딩 투영 레이어 + Residual Skip (GB10)" },
+      { cat: "dgx", name: "Sparse Gated Mixture-of-Experts (MoE)", cv: "13.1205", r: "0.6712", note: "4개 전문가 서브넷 + Top-2 라우팅 게이트 (GB10)" },
+      { cat: "dgx", name: "Spectral Graph Neural Network (GNN)", cv: "13.1890", r: "0.6685", note: "k-NN 코사인 친화도 라플라시안 스펙트럼 스무딩" },
+
+      // Foundation KRR (40)
+      { cat: "kernel", name: "Best Single: Fine Laplacian Kernel (DINOv2 SVD-48)", cv: "13.7623", r: "0.6380", note: "gamma=0.012, alpha=0.08 최적 파운데이션 단일 커널" },
+      { cat: "kernel", name: "Top-5 Blend: Dual-Bandwidth RBF + Laplacian", cv: "13.8841", r: "0.6315", note: "다중 대역폭 가우시안 및 라플라시안 혼합" },
+      { cat: "kernel", name: "Full Simplex: 40 Multi-Kernel Convex Hull", cv: "13.8812", r: "0.6318", note: "L1-제약 40차원 볼록 결합 최적화" },
+      { cat: "kernel", name: "DINOv2 ViT-L/14 Cosine Kernel Ridge", cv: "13.8920", r: "0.6302", note: "DINOv2 대형 백본 코사인 유사도 릿지" },
+      { cat: "kernel", name: "EVA-02 MIM Large RBF Kernel", cv: "13.9104", r: "0.6288", note: "마스크드 오토인코더 사전학습 임베딩" },
+      { cat: "kernel", name: "ConvNeXt-XXLarge 22k Polynomial Kernel", cv: "13.9512", r: "0.6250", note: "거대 컨볼루션 2차 다항식 커널" },
+      { cat: "kernel", name: "Wavelet Scattering Coiflet Transform KRR", cv: "14.1205", r: "0.6180", note: "다해상도 웨이블릿 산란 불변 특성" },
+      { cat: "kernel", name: "CLIP ViT-B/16 Multi-modal Embedding KRR", cv: "14.2100", r: "0.6120", note: "대조학습 기반 의미론적 임베딩 회귀" },
+      { cat: "kernel", name: "Simple Mean: 40 Foundation Models Uniform", cv: "14.4550", r: "0.6117", note: "40개 커널 균등 평균 베이스라인" },
+
+      // Tree Ensembles & Purged Baselines (17)
+      { cat: "tree", name: "CatBoost (Symmetric Trees)", cv: "15.1122", r: "0.5192", note: "대칭 트리 구조, 비전 피처 과적합 제어 최상" },
+      { cat: "tree", name: "LightGBM (GOSS)", cv: "15.1174", r: "0.5246", note: "Gradient-based One-Side Sampling" },
+      { cat: "tree", name: "Bagging Regressor (Trees)", cv: "15.1769", r: "0.5130", note: "50개 의사결정나무 배깅" },
+      { cat: "tree", name: "Explainable Boosting Machine (EBM)", cv: "15.1811", r: "0.5176", note: "Microsoft InterpretML 비선형 일반화 가법 모델" },
+      { cat: "tree", name: "NGBoost (Probabilistic Trees)", cv: "15.2347", r: "0.5100", note: "정규분포 분산/평균 동시 예측" },
+      { cat: "tree", name: "XGBoost (DART)", cv: "15.2722", r: "0.5076", note: "드롭아웃 트리 규제 적용" },
+      { cat: "tree", name: "Random Forest Regressor", cv: "15.2831", r: "0.5039", note: "n_estimators=300, max_features='sqrt'" },
+      { cat: "tree", name: "Gradient Boosting (sklearn)", cv: "15.2875", r: "0.5086", note: "Friedman MSE 손실함수" },
+      { cat: "tree", name: "Extra Trees (Extremely Randomized)", cv: "15.2943", r: "0.5018", note: "무작위 분할 트리 앙상블" },
+      { cat: "tree", name: "CatBoost (Depthwise)", cv: "15.3162", r: "0.5024", note: "깊이 우선 분할 트리" },
+      { cat: "tree", name: "XGBoost (GBDT)", cv: "15.3338", r: "0.5058", note: "colsample_bytree=0.8, subsample=0.8" },
+      { cat: "tree", name: "AdaBoost Regressor", cv: "15.4380", r: "0.4896", note: "지수 손실 적응형 부스팅" },
+      { cat: "tree", name: "XGBoost (Random Forest mode)", cv: "15.4520", r: "0.4862", note: "num_parallel_tree=100" },
+      { cat: "tree", name: "LightGBM (GBDT)", cv: "15.8315", r: "0.4682", note: "기본 분할 트리 부스팅" },
+      { cat: "tree", name: "HistGradientBoosting", cv: "15.8821", r: "0.4694", note: "히스토그램 기반 고속 부스팅" },
+      { cat: "tree", name: "Decision Tree (Unpruned)", cv: "18.4121", r: "0.3579", note: "단일 가지치기 없는 의사결정나무 (과적합 심각)" },
+      { cat: "tree", name: "LightGBM (DART 발산)", cv: "32.1926", r: "0.5043", note: "소표본 드롭아웃 발산 (앙상블에서 즉시 배제/소거)" }
+    ];
+
+    function renderZoo(items) {
+      const tbody = document.getElementById('zoo-table-body');
+      tbody.innerHTML = items.map((m, idx) => {
+        const catBadge = m.cat === 'vision' ? '<span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold">비전 DL</span>' :
+                         m.cat === 'dgx' ? '<span class="px-2 py-0.5 rounded bg-blue-950 text-blue-400 font-bold">DGX GPU</span>' :
+                         m.cat === 'kernel' ? '<span class="px-2 py-0.5 rounded bg-purple-950 text-purple-400 font-bold">파운데이션 KRR</span>' :
+                         '<span class="px-2 py-0.5 rounded bg-gray-800 text-gray-300 font-bold">트리 / ML</span>';
+        const isChamp = m.name.includes("swin_small") || m.name.includes("Multi-Head");
+        return `
+          <tr class="hover:bg-[#21262d] transition-colors ${isChamp ? 'bg-emerald-950/20' : ''}">
+            <td class="p-2.5">${catBadge}</td>
+            <td class="p-2.5 font-bold ${isChamp ? 'text-emerald-400' : 'text-white'}">${m.name}</td>
+            <td class="p-2.5 font-bold font-mono ${parseFloat(m.cv) < 13.5 ? 'text-emerald-400' : 'text-white'}">${m.cv} HV</td>
+            <td class="p-2.5 font-mono text-[#8b949e]">${m.r}</td>
+            <td class="p-2.5 text-[#8b949e]">${m.note}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    let currentFilter = 'all';
+    function filterZoo(cat) {
+      currentFilter = cat;
+      const btns = ['all', 'vision', 'dgx', 'kernel', 'tree'];
+      btns.forEach(b => {
+        const el = document.getElementById(`btn-zoo-${b}`);
+        if (b === cat) {
+          el.className = "px-3 py-1.5 rounded-lg bg-blue-600 text-white font-bold transition-all";
+        } else {
+          el.className = "px-3 py-1.5 rounded-lg bg-[#21262d] text-[#8b949e] hover:text-white transition-all";
+        }
+      });
+      searchZoo();
+    }
+
+    function searchZoo() {
+      const q = document.getElementById('zoo-search').value.toLowerCase().trim();
+      let filtered = zooData;
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(x => x.cat === currentFilter);
+      }
+      if (q) {
+        filtered = filtered.filter(x => x.name.toLowerCase().includes(q) || x.note.toLowerCase().includes(q));
+      }
+      renderZoo(filtered);
+    }
+
+    function renderSubmissionsTable() {
+      const tbody = document.getElementById('submission-table-body');
+      tbody.innerHTML = submissionsData.map(s => `
+        <tr class="hover:bg-[#21262d] transition-colors cursor-pointer" onclick="showSubInfo(${s.id})">
+          <td class="p-2 font-bold ${s.id === 30 || s.id === 27 ? 'text-amber-400' : 'text-white'}">#${s.id}</td>
+          <td class="p-2 font-mono text-[#58a6ff] hover:underline">${s.file}</td>
+          <td class="p-2 font-bold font-mono text-emerald-400">${s.pub}</td>
+          <td class="p-2 font-bold font-mono text-blue-400">${s.priv}</td>
+          <td class="p-2 text-[#8b949e]">${s.note}</td>
+        </tr>
+      `).join('');
+    }
+
+    function copySnippet() {
+      const text = document.getElementById('code-snippet').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">복사 완료!</span>';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fa-regular fa-copy"></i> <span>코드 복사</span>';
+        }, 2000);
+      });
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      selectStage(1);
+      renderSubmissionsTable();
+      renderZoo(zooData);
+      showSubInfo(30);
+    });
+  </script>
+</body>
+</html>

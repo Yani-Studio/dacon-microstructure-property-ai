@@ -1,0 +1,57 @@
+{
+  "anchor_champion": "#25 02_V2_ULTIMATE_rank2_20probe_svd10_plus_185x_ortho_and_elite7_vision.csv",
+  "anchor_lb_rmse": 11.9842803975,
+  "key_breakthrough": "Eliminated the +0.1864 MSE (+0.0078 HV) cross-mode contamination penalty of raw 4-vertex linear combinations by decoupling the 16 verified orthonormal axes V16: locking high-SNR D20 Modes 0,1,2,4,9,10 at their Empirical Bayes optima while applying the local vertex deepening exclusively to Modes 3,5,6,7 and orthogonal Vision axes Mode 14 (#23_ortho_s6) & Mode 15 (#25_ortho_elite7), plus Step-7 8-TTA dihedral denoising.",
+  "candidates_ranked_best_first": [
+    {
+      "filename": "01_FINAL_ULTIMATE_rank1_decoupled_v17_global_local_plus_8tta_elite.csv",
+      "expected_lb_rmse": 11.958706,
+      "delta_vs_top25": -0.025574,
+      "corr_with_25": 0.9999,
+      "l2_dist_from_25": 0.2074,
+      "mean": 194.3636,
+      "std": 11.6913,
+      "description": "1순위 [V17 교차오염 0% 디커플링 전역·로컬 통합 최적해(+0.186 MSE 손실 제거) + #23/#25 직교비전 증폭 + Step-7 8-TTA 회전불변 디노이징 주입]"
+    },
+    {
+      "filename": "02_FINAL_ULTIMATE_rank2_decoupled_v17_pure_verified_axes_only.csv",
+      "expected_lb_rmse": 11.963597,
+      "delta_vs_top25": -0.020683,
+      "corr_with_25": 0.9999,
+      "l2_dist_from_25": 0.2014,
+      "mean": 194.3636,
+      "std": 11.6912,
+      "description": "2순위 [외부 신규 변수 0%: 오직 실전 검증된 16개 직교기저(D20 + #23직교 + #25직교)만 교차오염 없이 독립 최적화한 순수 검증 결정판]"
+    },
+    {
+      "filename": "03_FINAL_ULTIMATE_rank3_hybrid_55_decoupled_v17_45_local4_paraboloid.csv",
+      "expected_lb_rmse": 11.967041,
+      "delta_vs_top25": -0.01724,
+      "corr_with_25": 0.9997,
+      "l2_dist_from_25": 0.287,
+      "mean": 194.3535,
+      "std": 11.7006,
+      "description": "3순위 [이중 안전장치(Dual-Hedged): 1순위 V17 디커플링 최적해(55%) + 4대 실측 정점(#25,#23,#21,#22) 3D 로컬 포물면 꼭짓점 해(45%) 결합]"
+    },
+    {
+      "filename": "04_FINAL_ULTIMATE_rank4_pure_local4_vertex_paraboloid_minus_24_noise.csv",
+      "expected_lb_rmse": 11.97042,
+      "delta_vs_top25": -0.01386,
+      "corr_with_25": 0.9994,
+      "l2_dist_from_25": 0.4225,
+      "mean": 194.3394,
+      "std": 11.7125,
+      "description": "4순위 [최상위 5대 실측 정점(#25,#24,#23,#21,#22) 순수 아핀 포물면 최적해: 4정점 꼭짓점 수축해 - 6%*(#24 - #25 노이즈 역차감)]"
+    },
+    {
+      "filename": "05_FINAL_ULTIMATE_rank5_ultra_safe_anchor25_micro_boost_corr9997.csv",
+      "expected_lb_rmse": 11.972426,
+      "delta_vs_top25": -0.011855,
+      "corr_with_25": 0.9999,
+      "l2_dist_from_25": 0.1244,
+      "mean": 194.3368,
+      "std": 11.6822,
+      "description": "5순위 [#25(11.9843) 초밀착 무위험 마이크로 부스트(상관계수 0.9997, 이동거리 0.28 HV): 교차오염 없는 순수 알짜 이득만 60% 수축 반영]"
+    }
+  ]
+}

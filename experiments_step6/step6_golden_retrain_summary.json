@@ -1,0 +1,131 @@
+{
+  "status": "COMPLETED",
+  "step_name": "6단계: 황금 레시피 7대 챔피언 5-Fold 교차검증(35 Folds) 완전학습",
+  "dataset": "4,000장 물리 마스터셋 (Stratified Group 5-Fold, Zero-Leakage)",
+  "models_count": 7,
+  "total_folds": 35,
+  "raw_ensemble_oof_rmse_4000": 12.9803,
+  "raw_ensemble_oof_rmse_500": 12.9687,
+  "calibrated_oof_rmse_4000": 13.1579,
+  "calibrated_oof_rmse_500": 13.1266,
+  "test_min_hardness": 162.74,
+  "test_max_hardness": 240.77,
+  "test_mean_hardness": 194.07,
+  "submission_5fold_path": "/home/yani_studio/si/submissions/submission_step6_golden_5fold_champion.csv",
+  "champions": [
+    {
+      "id": 1,
+      "name": "mobilenetv4_conv_small",
+      "family": "MobileNet",
+      "weight_pct": 7.12,
+      "fold_rmses": [
+        15.2723,
+        12.5287,
+        14.9438,
+        14.6171,
+        13.6734
+      ],
+      "mean_fold_rmse": 14.2071,
+      "oof_rmse_4000": 14.2418,
+      "oof_rmse_500": 14.3148
+    },
+    {
+      "id": 2,
+      "name": "swin_tiny_patch4_window7_224",
+      "family": "Transformer/Swin",
+      "weight_pct": 3.0,
+      "fold_rmses": [
+        14.0742,
+        12.9921,
+        14.8066,
+        13.4982,
+        13.6601
+      ],
+      "mean_fold_rmse": 13.8062,
+      "oof_rmse_4000": 13.8196,
+      "oof_rmse_500": 13.8466
+    },
+    {
+      "id": 3,
+      "name": "inception_v3",
+      "family": "Inception",
+      "weight_pct": 13.83,
+      "fold_rmses": [
+        15.0485,
+        12.9063,
+        15.0258,
+        13.4333,
+        13.8942
+      ],
+      "mean_fold_rmse": 14.0616,
+      "oof_rmse_4000": 14.0876,
+      "oof_rmse_500": 13.9899
+    },
+    {
+      "id": 4,
+      "name": "efficientnet_b6",
+      "family": "EfficientNet",
+      "weight_pct": 9.52,
+      "fold_rmses": [
+        15.1375,
+        12.3204,
+        15.3163,
+        14.6702,
+        14.3205
+      ],
+      "mean_fold_rmse": 14.353,
+      "oof_rmse_4000": 14.3932,
+      "oof_rmse_500": 14.6024
+    },
+    {
+      "id": 5,
+      "name": "vit_small_patch16_224",
+      "family": "Transformer/ViT",
+      "weight_pct": 24.79,
+      "fold_rmses": [
+        14.1542,
+        12.5446,
+        13.69,
+        14.0297,
+        13.0654
+      ],
+      "mean_fold_rmse": 13.4968,
+      "oof_rmse_4000": 13.5105,
+      "oof_rmse_500": 13.4764
+    },
+    {
+      "id": 6,
+      "name": "resnext101_32x8d",
+      "family": "ResNet/ResNeXt",
+      "weight_pct": 21.1,
+      "fold_rmses": [
+        14.0928,
+        11.7786,
+        14.4806,
+        13.6261,
+        12.5385
+      ],
+      "mean_fold_rmse": 13.3033,
+      "oof_rmse_4000": 13.341,
+      "oof_rmse_500": 13.3254
+    },
+    {
+      "id": 7,
+      "name": "convnext_large",
+      "family": "ConvNeXt",
+      "weight_pct": 20.64,
+      "fold_rmses": [
+        14.1633,
+        12.2678,
+        14.2095,
+        13.4639,
+        13.709
+      ],
+      "mean_fold_rmse": 13.5627,
+      "oof_rmse_4000": 13.581,
+      "oof_rmse_500": 13.5577
+    }
+  ],
+  "calibration_recipe": "Huber Robust Affine (alpha=1.4085, beta=-78.23, Guard=[150.0, 265.0])",
+  "completed_at": "2026-10-14 04:54:23"
+}

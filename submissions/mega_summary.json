@@ -1,0 +1,48 @@
+[
+  {
+    "file": "submission_mega_01_nnls_stack_all.csv",
+    "oof_rmse": 12.98848116905699,
+    "weights": {
+      "dinov2_b|ridge": 0.172,
+      "phys_v2|ridge": 0.092,
+      "dl_swin_tiny_patch4_window7_224": 0.022,
+      "dl_inception_v3": 0.181,
+      "dl_vit_small_patch16_224": 0.307,
+      "dl_resnext101_32x8d": 0.355,
+      "dl_convnext_large": 0.086
+    }
+  },
+  {
+    "file": "submission_mega_02_all_deep_mean_affine.csv",
+    "oof_rmse": 13.027059791521227,
+    "weights": {
+      "dl_mobilenetv4_conv_small": 0.125,
+      "dl_swin_tiny_patch4_window7_224": 0.125,
+      "dl_inception_v3": 0.125,
+      "dl_efficientnet_b6": 0.125,
+      "dl_vit_small_patch16_224": 0.125,
+      "dl_resnext101_32x8d": 0.125,
+      "dl_convnext_large": 0.125,
+      "dl_convnext_base": 0.125
+    }
+  },
+  {
+    "file": "submission_mega_03_ridge_stack_all.csv",
+    "oof_rmse": 13.090811046596023,
+    "weights": {
+      "alpha": 85.31678524172814
+    }
+  },
+  {
+    "file": "submission_mega_04_nnls_huber_calibrated.csv",
+    "oof_rmse": 13.002687397904962,
+    "weights": {
+      "huber_slope": 0.997
+    }
+  },
+  {
+    "file": "submission_mega_05_blend_of_stacks.csv",
+    "oof_rmse": 13.03545066905808,
+    "weights": {}
+  }
+]

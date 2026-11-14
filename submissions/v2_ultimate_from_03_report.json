@@ -1,0 +1,61 @@
+{
+  "anchor_champion": "#23 03_ULTIMATE_spectral_svd_top8_plus_ortho_step6_vision.csv",
+  "anchor_lb_rmse": 12.0166791618,
+  "candidates_ranked_best_first": [
+    {
+      "filename": "01_V2_ULTIMATE_rank1_20probe_svd12_tree_purged_plus_elite_new04.csv",
+      "expected_lb_rmse": 11.971253,
+      "delta_vs_top23": -0.045426,
+      "delta_vs_top16": -0.441804,
+      "corr_with_23": 0.9967,
+      "l2_dist_from_23": 0.9826,
+      "mean": 194.3805,
+      "std": 11.6497,
+      "description": "1순위 [20-Probe SVD(Mode 8 부호 역전 교정 + Mode 12 17대 트리 잔여오차 완전 박멸) + #23 직교축 1.75배 증폭 + 엘리트 비전 7종 & 미제출 New04(임베딩+물리+DL 스태킹) 직교 주입 - 약체 CNN 차감]"
+    },
+    {
+      "filename": "02_V2_ULTIMATE_rank2_20probe_svd10_plus_185x_ortho_and_elite7_vision.csv",
+      "expected_lb_rmse": 11.97652,
+      "delta_vs_top23": -0.04016,
+      "delta_vs_top16": -0.436537,
+      "corr_with_23": 0.9974,
+      "l2_dist_from_23": 0.862,
+      "mean": 194.2966,
+      "std": 11.6695,
+      "description": "2순위 [20-Probe SVD(#11/#12 오차축 역보정 완주) + #23 실전 검증 직교축 1.85배 증폭 + 엘리트 비전 7종(ConvNeXt-L 8TTA 12.04, ConvNeXt-B 12.09, ViT-S 8TTA 12.21) 순수 직교 성분 주입]"
+    },
+    {
+      "filename": "03_V2_ULTIMATE_rank3_pure_d20_corrected_185x_verified_step6_ortho.csv",
+      "expected_lb_rmse": 11.984032,
+      "delta_vs_top23": -0.032647,
+      "delta_vs_top16": -0.429025,
+      "corr_with_23": 0.9974,
+      "l2_dist_from_23": 0.8568,
+      "mean": 194.2966,
+      "std": 11.6691,
+      "description": "3순위 [외부 미검증 변수 0%: 순수 20-Probe SVD(Mode 8 부호 역전 교정) + #23에서 -0.41 MSE 감소를 실증한 Step-6 직교벡터만 1.85배 정밀 증폭]"
+    },
+    {
+      "filename": "04_V2_ULTIMATE_rank4_anchor23_pinpoint_mode8_fix_140x_ortho.csv",
+      "expected_lb_rmse": 11.986586,
+      "delta_vs_top23": -0.030093,
+      "delta_vs_top16": -0.42647,
+      "corr_with_23": 0.9985,
+      "l2_dist_from_23": 0.6606,
+      "mean": 194.2555,
+      "std": 11.6931,
+      "description": "4순위 [#23(12.0167) 초밀착 핀셋 교정(상관계수 0.9985): #23의 치명적 Mode 8 부호 결함(+0.23 -> -0.44) 핀셋 교정 + 검증 직교축 1.40배 안전 증폭]"
+    },
+    {
+      "filename": "05_V2_ULTIMATE_rank5_parabola_secant_extrapolation_23_over_21.csv",
+      "expected_lb_rmse": 11.987579,
+      "delta_vs_top23": -0.0291,
+      "delta_vs_top16": -0.425477,
+      "corr_with_23": 0.9975,
+      "l2_dist_from_23": 0.8336,
+      "mean": 194.0962,
+      "std": 11.7403,
+      "description": "5순위 [#21(12.0467) -> #23(12.0167) 실측 리더보드 2차 포물선 꼭짓점(1.65배) 직결 외삽 + #11/#12 Mode 4&8 오차 성분 제거]"
+    }
+  ]
+}

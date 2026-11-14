@@ -1,0 +1,37 @@
+[
+  {
+    "file": "submission_new_01_frozen_embedding_best.csv",
+    "oof_rmse": 14.182889749164238,
+    "desc": "best single embedding block: eva02_b|ridge",
+    "lo": 165.88040161132812,
+    "hi": 229.55352783203125
+  },
+  {
+    "file": "submission_new_02_concat_embeddings_physics_ridge.csv",
+    "oof_rmse": 14.037128760398529,
+    "desc": "all embeddings + physics_v2, Ridge",
+    "lo": 166.50191217637152,
+    "hi": 227.228571714571
+  },
+  {
+    "file": "submission_new_03_concat_embeddings_physics_krr.csv",
+    "oof_rmse": 14.166498491423566,
+    "desc": "all embeddings + physics_v2, RBF Kernel Ridge",
+    "lo": 165.1960569369882,
+    "hi": 229.24904468634733
+  },
+  {
+    "file": "submission_new_04_stack_embed_physics_dl.csv",
+    "oof_rmse": 12.908537843465533,
+    "desc": "NNLS stack {'eva02_b|ridge': 0.0, 'dinov2_s|ridge': 0.0, 'dinov2_b|ridge': 0.16, 'dinov2_s|krr': 0.0, 'phys_v2|ridge': 0.092, 'dl_golden_raw': 0.95, 'intercept': -38.96}",
+    "lo": 167.81702924751966,
+    "hi": 233.75895613962064
+  },
+  {
+    "file": "submission_new_05_wide_stack_all.csv",
+    "oof_rmse": 12.921545514819833,
+    "desc": "NNLS wide stack {'eva02_b|ridge': 0.0, 'dinov2_s|ridge': 0.0, 'dinov2_b|ridge': 0.16, 'dinov2_s|krr': 0.0, 'concat_all|ridge': 0.0, 'concat_all|krr': 0.0, 'phys_v2|ridge': 0.092, 'phys_v2|krr': 0.0, 'dl_golden_raw': 0.95, 'intercept': -38.96}",
+    "lo": 167.81702924751966,
+    "hi": 233.75895613962064
+  }
+]
