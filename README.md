@@ -14,15 +14,6 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge" alt="MIT License"></a>
 </p>
 
-<p>
-  <a href="#-대회-개요">대회 개요</a> •
-  <a href="#-듀얼-컴퓨팅-챔피언-아키텍처">시스템 아키텍처</a> •
-  <a href="#-방법론-및-시각화-심층-해설">시각화 심층 해설 (01–08)</a> •
-  <a href="#-메트릭-서브스페이스-역기하학-수식">수학적 정식화</a> •
-  <a href="#-저장소-구조-및-실행-가이드">저장소 & 실행 가이드</a> •
-  <a href="#-30회-제출-기록-및-79종-모델-벤치마크">전체 벤치마크 부록</a>
-</p>
-
 <br/>
 
 ![프로젝트 핵심 성과 쇼케이스 배너](visualization/02_hero_showcase_banner.png)
@@ -47,6 +38,12 @@
 | **공식 최종 성적** | **231팀 중 최종 109위 (상위 47% 안착)** | Public 최고 **11.7702 HV** (`#30`) · Private 최고 **12.5568 HV** (`#27`) |
 | **데이터 스케일** | 학습 원본 **500장** $\rightarrow$ 평가 **1,000장** | 극소 표본 일반화 성능 확보 및 과적합 통제가 핵심 |
 | **평가 지표** | **RMSE (단위: $HV$, 낮을수록 우수)** | 극소수 초고경도 꼬리 구간(`231~264 HV`) 오차 제어가 승부처 |
+
+<p align="center">
+  <img src="visualization/09_dacon_leaderboard_result.png" alt="DACON 공식 리더보드 최종 순위 인증 (yani_studio · 109위 · 11.7702 HV)" />
+  <br/>
+  <sub>▲ DACON 공식 리더보드 최종 확정 결과 (`yani_studio` · 최종 109위 / 231팀 · 11.7702 HV)</sub>
+</p>
 
 ### 🧩 왜 단순 CNN·ViT 파인튜닝으로는 12점대 벽을 넘기 어려운가?
 
@@ -212,7 +209,7 @@ remix si/
 ├── index.html                                 # 로컬 인터랙티브 대시보드 (localhost:8088)
 ├── assets/
 │   └── dacon_competition_banner.png           # DACON 경진대회 공식 배너 이미지
-├── visualization/                             # 2× Retina 고해상도 시각화 인포그래픽 (01~08)
+├── visualization/                             # 시각화 인포그래픽 & 리더보드 인증 (01~09)
 │   ├── 01_champion_architecture_pipeline.png  # #1 듀얼 컴퓨팅 챔피언 아키텍처
 │   ├── 02_hero_showcase_banner.png            # #2 핵심 성과 쇼케이스 배너
 │   ├── 03_submission_trajectory_convergence.png
@@ -220,7 +217,8 @@ remix si/
 │   ├── 05_physical_d4_symmetry_engine.png
 │   ├── 06_kpi_scorecard_matrix.png
 │   ├── 07_ablation_waterfall_analysis.png
-│   └── 08_generalization_and_tail_diagnostics.png
+│   ├── 08_generalization_and_tail_diagnostics.png
+│   └── 09_dacon_leaderboard_result.png        # DACON 공식 최종 리더보드 순위 인증 (109위)
 ├── dgx_spark/                                 # NVIDIA DGX Spark (GB10 GPU) 분산 학습 모듈
 │   ├── dgx_gpu_moe_residual_sim8.py           # 4-Head Cross-Attn + Top-2 Gated MoE + Spectral GNN
 │   ├── extract_embeddings_dgx.py              # DINOv2 / EVA-02 / ConvNeXt22k / CLIP 임베딩 추출기
@@ -391,3 +389,4 @@ python3 -m http.server 8088   # 실행 후 브라우저에서 http://localhost:8
 <div align="center">
   <sub>구축 환경: <b>Apple Mac Studio (M2 Max)</b> × <b>NVIDIA DGX Spark (GB10 GPU)</b> • <a href="LICENSE">MIT License</a>에 따라 배포됨</sub>
 </div>
+
