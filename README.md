@@ -387,6 +387,6 @@ python3 -m http.server 8088   # 실행 후 브라우저에서 http://localhost:8
 ---
 
 <div align="center">
-  <sub>구축 환경: <b>Apple Mac Studio (M2 Max)</b> × <b>NVIDIA DGX Spark (GB10 GPU)</b> • <a href="LICENSE">MIT License</a>에 따라 배포됨</sub>
+
 </div>
 
