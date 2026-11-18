@@ -5,12 +5,17 @@
 ### *물리 등변 비전 신경망 · SVD-48 차원 균형 파운데이션 공간 · 분산 DGX MoE · 역기하학 서브스페이스 최적화*
 
 <p>
+  <a href="README.md"><img src="https://img.shields.io/badge/Language-한국어_(Current)-2563EB?style=for-the-badge" alt="한국어 버전"></a>
+  <a href="README.en.md"><img src="https://img.shields.io/badge/English-Switch%20Version-30363D?style=for-the-badge" alt="English Version"></a>
+</p>
+
+<p>
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
   <a href="https://pytorch.org"><img src="https://img.shields.io/badge/PyTorch-2.2+-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch"></a>
   <a href="https://nvidia.com"><img src="https://img.shields.io/badge/NVIDIA_DGX-GB10_128GB-76B900?style=for-the-badge&logo=nvidia&logoColor=white" alt="NVIDIA DGX"></a>
-  <a href="https://dacon.io"><img src="https://img.shields.io/badge/최종_순위-109위_/_231팀-2563EB?style=for-the-badge" alt="최종 순위"></a>
-  <a href="https://dacon.io"><img src="https://img.shields.io/badge/Public_최고-11.7702_HV-16A34A?style=for-the-badge" alt="Public 최고"></a>
-  <a href="https://dacon.io"><img src="https://img.shields.io/badge/Private_최고-12.5568_HV-7C3AED?style=for-the-badge" alt="Private 최고"></a>
+  <a href="https://daker.ai/public/hackathons/synthetic-microstructure-property-prediction-ai"><img src="https://img.shields.io/badge/최종_순위-109위_/_231팀-2563EB?style=for-the-badge" alt="최종 순위"></a>
+  <a href="https://daker.ai/public/hackathons/synthetic-microstructure-property-prediction-ai"><img src="https://img.shields.io/badge/Public_최고-11.7702_HV-16A34A?style=for-the-badge" alt="Public 최고"></a>
+  <a href="https://daker.ai/public/hackathons/synthetic-microstructure-property-prediction-ai"><img src="https://img.shields.io/badge/Private_최고-12.5568_HV-7C3AED?style=for-the-badge" alt="Private 최고"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge" alt="MIT License"></a>
 </p>
 
@@ -26,13 +31,14 @@
 
 ## 🏆 대회 개요
 
-![DACON 합성 미세구조 기반 재료 물성 예측 AI 경진대회 공식 배너](assets/dacon_competition_banner.png)
+[![DACON 합성 미세구조 기반 재료 물성 예측 AI 경진대회 공식 배너](assets/dacon_competition_banner.png)](https://daker.ai/public/hackathons/synthetic-microstructure-property-prediction-ai)
 
-**「합성 미세구조 기반 재료 물성 예측 AI 경진대회」**는 금속 및 합금 재료의 **2D 합성 미세조직(Synthetic Microstructure) 전자현미경 단면 이미지**만을 입력으로 받아, 재료의 기계적 강도를 대표하는 **비커스 경도 대용값(Vickers Hardness, $HV$)**을 정밀하게 추론하는 고난도 **이미지-스칼라 회귀(Image-to-Scalar Regression)** AI 경진대회입니다.
+[**「합성 미세구조 기반 재료 물성 예측 AI 경진대회」**](https://daker.ai/public/hackathons/synthetic-microstructure-property-prediction-ai)는 금속 및 합금 재료의 **2D 합성 미세조직(Synthetic Microstructure) 전자현미경 단면 이미지**만을 입력으로 받아, 재료의 기계적 강도를 대표하는 **비커스 경도 대용값(Vickers Hardness, $HV$)**을 정밀하게 추론하는 고난도 **이미지-스칼라 회귀(Image-to-Scalar Regression)** AI 경진대회입니다.
 
 | 구분 | 세부 내용 | 공학적 해석 및 핵심 과제 |
 | :--- | :--- | :--- |
 | **주최 / 플랫폼** | **DACON (데이콘)** × **DAKER 해커톤** | 실전 소재·산업 비전 물성 정량 예측 트랙 |
+| **대회 공식 링크** | [**🔗 daker.ai 공식 해커톤 페이지 바로가기**](https://daker.ai/public/hackathons/synthetic-microstructure-property-prediction-ai) | 대회 개요·데이터 명세·공식 리더보드 확인 |
 | **대회 기간** | `2026.09.29` ~ `2026.10.29` | 1개월간 가설 수립·CV 검증·30회 리더보드 프로빙 |
 | **참가 규모** | 참가 신청 **414팀** / 최종 제출 **231팀** | 총 2,894건 제출 경쟁 |
 | **공식 최종 성적** | **231팀 중 최종 109위 (상위 47% 안착)** | Public 최고 **11.7702 HV** (`#30`) · Private 최고 **12.5568 HV** (`#27`) |
@@ -204,6 +210,7 @@ $$\min_{\sum a_i = 1} \left( \sum_i a_i s_i^2 - \frac{1}{2} a^\top D_w a + \lamb
 ```plaintext
 remix si/
 ├── README.md                                  # 프로젝트 전체 아키텍처·성과·수식 한국어 문서
+├── README.en.md                               # 전체 문서 영문 버전 (English Version)
 ├── LICENSE                                    # MIT 라이선스
 ├── requirements.txt                           # 파이썬 패키지 의존성 명세
 ├── index.html                                 # 로컬 인터랙티브 대시보드 (localhost:8088)
@@ -247,7 +254,7 @@ remix si/
 
 > [!IMPORTANT]
 > **데이터셋 비공개 정책 안내 (DACON Data Confidentiality Policy)**
-> 대회 규약 및 지적재산권 보호 정책에 따라 원본 학습·평가 이미지(`data/raw/train/`, `data/raw/test/`), 정답 레이블(`train.csv`), 파생 물리 피처 테이블(`features/*.csv`), 모델 체크포인트(`.pth`), 이진 임베딩 캐시(`.npy`)는 공개 GitHub 저장소에 포함되지 않습니다. 전체 재학습부터 재현하려면 [DACON](https://dacon.io) 공식 데이터를 다운로드해 프로젝트 루트 기준 아래 경로에 배치한 뒤 순서대로 실행하세요:
+> 대회 규약 및 지적재산권 보호 정책에 따라 원본 학습·평가 이미지(`data/raw/train/`, `data/raw/test/`), 정답 레이블(`train.csv`), 파생 물리 피처 테이블(`features/*.csv`), 모델 체크포인트(`.pth`), 이진 임베딩 캐시(`.npy`)는 공개 GitHub 저장소에 포함되지 않습니다. 전체 재학습부터 재현하려면 [DACON × DAKER 공식 대회 페이지](https://daker.ai/public/hackathons/synthetic-microstructure-property-prediction-ai)에서 공식 데이터를 다운로드해 프로젝트 루트 기준 아래 경로에 배치한 뒤 순서대로 실행하세요:
 > `data/raw/{train/TRAIN_000001~000500.png, test/TEST_000001~001000.png, train.csv, sample_submission.csv}` (`01`·`02` 스크립트 실행 시 `data/master_augmented/` 및 `features/` 자동 생성).
 
 ### ⚡ 실행 및 재현 가이드
@@ -387,6 +394,8 @@ python3 -m http.server 8088   # 실행 후 브라우저에서 http://localhost:8
 ---
 
 <div align="center">
+  <sub>구축 환경: <b>Apple Mac Studio (M2 Max)</b> × <b>NVIDIA DGX Spark (GB10 GPU)</b> • <a href="LICENSE">MIT License</a>에 따라 배포됨</sub>
+</div>
 
 </div>
 
